@@ -2,6 +2,8 @@ package com.baz.divisas.api.tef.catalogos;
 
 import javax.validation.Valid;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +32,7 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = "TEF/Catalogos/TiposOperacion")
 @Validated
 public class TiposOperacionController {
+	private static final Logger LOGGER = LogManager.getLogger(TiposOperacionController.class);
 
 	@Autowired
 	private ICatalogos tiposOperacionImpl;
@@ -45,8 +48,9 @@ public class TiposOperacionController {
 			@ApiResponse(code = 401, message = "Unauthorized"),
 			@ApiResponse(code = 404, message = "Not Found")})
 	public ResponseEntity<ResponseApi> get() {
-
+		
 		ResponseApi resultado = tiposOperacionImpl.getTiposOperacion();
+		LOGGER.info("resultado {}", resultado);
 
 		return new ResponseEntity<>(resultado, resultado.getHttpStatus());
 	}
