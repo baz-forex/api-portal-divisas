@@ -1,0 +1,26 @@
+# Forzar normalización automática para todos los archivos de texto
+* text=auto
+
+# Archivos Java y de configuración deben guardarse como LF internamente
+*.java text
+*.xml text
+*.properties text
+*.yml text
+*.yaml text
+
+# Scripts de Maven (Muy importante para equipos mixtos)
+# El script de Linux DEBE ser LF para que funcione en Docker/Linux
+mvnw text eol=lf
+# El script de Windows DEBE ser CRLF
+mvnw.cmd text eol=crlf
+
+# Asegurar que otros scripts de shell siempre sean LF
+*.sh text eol=lf
+*.bat text eol=crlf
+
+# Definir archivos binarios para que Git no intente "corregirlos"
+*.jar binary
+*.war binary
+*.class binary
+*.png binary
+*.jpg binary
