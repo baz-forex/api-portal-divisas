@@ -4,17 +4,17 @@ API REST backend para el Portal de Divisas de Grupo Salinas (Banco Azteca). Prop
 
 ## Tecnologías
 
-| Componente | Tecnología |
-|---|---|
-| Lenguaje | Java 17 |
-| Framework | Spring Boot 2.6.7 |
-| Base de datos | MongoDB 5.6 |
-| Seguridad | Spring Security + JWT |
-| Documentación API | Swagger (Springfox 2.9.2) |
-| Build | Maven |
-| Empaquetado | WAR (despliegue en Tomcat) |
-| Pruebas | JUnit 5 + Mockito |
-| Cobertura | JaCoCo |
+| Componente        | Tecnología                 |
+| ----------------- | -------------------------- |
+| Lenguaje          | Java 17                    |
+| Framework         | Spring Boot 2.6.7          |
+| Base de datos     | MongoDB 5.6                |
+| Seguridad         | Spring Security + JWT      |
+| Documentación API | Swagger (Springfox 2.9.2)  |
+| Build             | Maven                      |
+| Empaquetado       | WAR (despliegue en Tomcat) |
+| Pruebas           | JUnit 5 + Mockito          |
+| Cobertura         | JaCoCo                     |
 
 ## Estructura del Proyecto
 
@@ -71,7 +71,9 @@ src/main/java/com/baz/divisas/
 ## Módulos Principales
 
 ### TEF (Tipo de cambio Electra/Financiero)
+
 Gestión completa de tipos de cambio para la red de sucursales:
+
 - **Regiones y segmentos**: Organización jerárquica de sucursales.
 - **Spots**: Registro y consulta de tipos de cambio spot (incluye integración con Tesorería).
 - **Spreads**: Configuración de diferenciales por divisa.
@@ -83,6 +85,7 @@ Gestión completa de tipos de cambio para la red de sucursales:
 - **PromoEspacio**: Informar tipos de cambio mejorados por geolocalización.
 
 ### Core
+
 - **Certificación de sucursales**: Cuestionarios, respuestas y certificación operativa.
 - **Clientes**: Búsqueda, actualización, bloqueos operativos, clientes agrupados y alto riesgo.
 - **Beneficios**: Campañas, premios, seguros, cupones de tiempo aire y rascadito digital.
@@ -90,11 +93,13 @@ Gestión completa de tipos de cambio para la red de sucursales:
 - **Reportería**: Operaciones, incidencias BCD, ganadores de promociones e inventarios.
 
 ### Digital
+
 - Parametría de operaciones (montos, vigencias, fluctuación, cancelaciones).
 - Seguimiento de tipo de cambio y remesas.
 - Reporte de cotizaciones y operaciones de la app.
 
 ### Seguridad
+
 - Autenticación con JWT (RS256 con llave privada).
 - Gestión de llaves RSA/AES para cifrado de datos.
 - Integración con SCIM para provisioning de usuarios.
@@ -142,10 +147,10 @@ mvn verify
 
 Los archivos de propiedades se encuentran en el directorio `properties/` organizados por ambiente:
 
-| Ambiente | Directorio |
-|---|---|
+| Ambiente   | Directorio                   |
+| ---------- | ---------------------------- |
 | Desarrollo | `properties/properties_des/` |
-| QA | `properties/properties_qa/` |
+| QA         | `properties/properties_qa/`  |
 | Producción | `properties/properties_pro/` |
 
 El archivo principal de configuración es `APIPortalDivisas.properties`.
@@ -156,6 +161,9 @@ Una vez desplegada la aplicación, la documentación Swagger está disponible en
 
 ```
 http://{host}:{puerto}/{context-path}/swagger-ui.html
+
+Ejemplo:
+http://localhost:8080/ApiPortalDivisas/swagger-ui.html
 ```
 
 ## Despliegue
@@ -177,7 +185,6 @@ La aplicación sigue una arquitectura por capas:
 3. **DAO**: Acceso directo a MongoDB mediante el driver nativo.
 
 La comunicación con servicios externos se realiza mediante WebClient (WebFlux) y OkHttp para integraciones con APIs internas (Middleware, Apigee, Tesorería, AWS).
-
 
 ## Adicionales
 
