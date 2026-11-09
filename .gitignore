@@ -44,7 +44,7 @@ logs/
 !.env.example
 properties/**/divisas-ece-private
 properties/**/*.local.properties
-config/
-secrets/
+#config/
+#secrets/
 
 docs/*
