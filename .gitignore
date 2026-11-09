@@ -46,3 +46,5 @@ properties/**/divisas-ece-private
 properties/**/*.local.properties
 config/
 secrets/
+
+docs/*
