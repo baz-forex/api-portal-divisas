@@ -54,6 +54,7 @@ public final class Constant {
 	
 	public static final String API_FORMAT_CODIGO = "{0}.Portal-Divisas.{0}";
 	public static final String API_FORMAT_INFO = "https://baz-developer.bancoazteca.com.mx/info#{0}.Portal-Divisas.{0}";
+	public static final String CLIENT_ID_ALREADY_EXISTS = "El clientId ya existe en la base de datos.";
 	
 	public static final String ID_ACCESO_INVALIDO = "El x-idAcceso está expirado o no es válido, "
 												  + "favor de solicitar uno nuevo";

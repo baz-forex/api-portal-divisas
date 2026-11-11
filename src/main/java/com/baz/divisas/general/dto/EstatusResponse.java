@@ -14,6 +14,7 @@ public enum EstatusResponse {
 	NO_PERMITIDO(HttpStatus.FORBIDDEN, "Acceso denegado."),
 	PETICION_INCORRECTA(HttpStatus.BAD_REQUEST, "Petición no válida."),
 	SIN_RESULTADOS(HttpStatus.NOT_FOUND, "No existe información."),
+	CLIENT_ID_ALREADY_EXISTS(HttpStatus.CONFLICT, "El clientId ya existe en la base de datos."),
 	ERROR_STATUS_USUARIO(HttpStatus.NOT_FOUND, "Usuario en estatus invalido."),
 	NO_CONTENT(HttpStatus.NO_CONTENT,"Error al actualizar."), 
 	ERROR_INTERNO(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrio un error al procesar la peticion.");

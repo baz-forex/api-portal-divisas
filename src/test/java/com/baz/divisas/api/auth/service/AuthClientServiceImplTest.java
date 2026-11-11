@@ -40,6 +40,7 @@ class AuthClientServiceImplTest {
 
 	@Test
 	void testCreateAuthClient() {
+		when(authDao.findById("testClient")).thenReturn(null);
 		when(passwordEncoder.encode(isA(String.class))).thenReturn("encodedPassword");
 		when(authDao.insertClient(isA(AuthClient.class))).thenReturn(mockInsertResult);
 
@@ -50,6 +51,18 @@ class AuthClientServiceImplTest {
 		assertThat(result.getClientSecret()).isNotNull();
 		// El clientId devuelto debe ser hexadecimal (el hex de "testClient")
 		assertThat(result.getClientId()).isEqualTo(Hex.encodeHexString("testClient".getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+	}
+
+	@Test
+	void testCreateAuthClientClientIdExistente() {
+		AuthClient existingClient = new AuthClient();
+		existingClient.setClientId("testClient");
+		when(authDao.findById("testClient")).thenReturn(existingClient);
+
+		org.assertj.core.api.Assertions.assertThatThrownBy(
+				() -> authClientService.createAuthClient("testClient"))
+				.isInstanceOf(com.baz.divisas.api.auth.ClientIdAlreadyExistsException.class)
+				.hasMessage("testClient");
 	}
 
 	@Test

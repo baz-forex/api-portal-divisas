@@ -38,6 +38,8 @@
 ${sys:jboss.server.log.dir}/
 logs/
 
+.DS_Store
+
 # Local environment and secrets
 .env
 .env.*
@@ -48,3 +50,4 @@ properties/**/*.local.properties
 #secrets/
 
 docs/*
+!docs/api-portal-divisas.yaml

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.baz.divisas.api.auth.ClientIdAlreadyExistsException;
 import com.baz.divisas.general.dto.EstatusResponse;
 import com.baz.divisas.general.dto.ResponseApi;
 import com.baz.divisas.general.util.LogApp;
@@ -78,6 +79,13 @@ public class GlobalExceptionHandlerController {
   public ResponseApi handleMissingRequestHeaderException(MissingRequestHeaderException e) {    
     return new ResponseApi(EstatusResponse.PETICION_INCORRECTA,
 			   			   Arrays.asList("Header requerido.")); 
+  }
+
+  @ResponseStatus(HttpStatus.CONFLICT)
+  @ExceptionHandler(ClientIdAlreadyExistsException.class)
+  public ResponseApi handleClientIdAlreadyExistsException(ClientIdAlreadyExistsException e) {
+	  return new ResponseApi(EstatusResponse.CLIENT_ID_ALREADY_EXISTS,
+			  Arrays.asList("El clientId '" + e.getClientId() + "' ya existe en la base de datos."));
   }
   
   @ResponseStatus(HttpStatus.BAD_REQUEST)
