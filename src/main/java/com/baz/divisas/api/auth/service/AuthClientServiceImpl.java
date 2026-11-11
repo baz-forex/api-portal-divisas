@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.baz.divisas.api.auth.ClientIdAlreadyExistsException;
 import com.baz.divisas.api.auth.dao.AuthClientDao;
 import com.baz.divisas.api.auth.model.AuthClient;
 import com.baz.divisas.general.model.Constant;
 import com.baz.divisas.general.util.LogApp;
+import com.mongodb.MongoWriteException;
 
 /**
  * Service AuthClient
@@ -47,13 +49,25 @@ public class AuthClientServiceImpl{
 	 * @return AuthClient
 	 */
 	public AuthClient createAuthClient(String clientId) {
+		if (authDao.findById(clientId) != null) {
+			throw new ClientIdAlreadyExistsException(clientId);
+		}
 		
 		String passClient = generatePassword();
 		AuthClient authUserDB = new AuthClient();
 		authUserDB.setClientId(clientId);
 		authUserDB.setClientSecret(passwordEncoder.encode(passClient));
 
-		authDao.insertClient(authUserDB);
+		try {
+			authDao.insertClient(authUserDB);
+		}
+		catch (MongoWriteException e) {
+			// La validación previa no elimina una posible condición de carrera.
+			if (e.getError() != null && e.getError().getCode() == 11000) {
+				throw new ClientIdAlreadyExistsException(clientId);
+			}
+			throw e;
+		}
 		
 		authUserDB.setClientId(Hex.encodeHexString(authUserDB.getClientId().getBytes(UTF_8)));
 		authUserDB.setClientSecret(Hex.encodeHexString(passClient.getBytes(UTF_8)));
