@@ -149,7 +149,7 @@ public class SegmentosService implements ISegmentosService {
 			if (resultUpdate.getMatchedCount() > 0) {
 
 				resultado = new ResponseApi(EstatusResponse.OK);
-				
+
 				if (resultUpdate.getModifiedCount() > 0) {
 					bitacora.registrar(AccionBitacora.EDITAR, 
 							"Actualización descripción segmento "+ segmento.getDescripcion() + ": " + descripcion);
@@ -196,7 +196,7 @@ public class SegmentosService implements ISegmentosService {
 							"Actualización estatus del segmento: " + segmento.getDescripcion(),
 							!segmento.isActivo());
 				}
-				
+
 			} 
 			else {
 				resultado = new ResponseApi(EstatusResponse.ERROR_INTERNO,
@@ -340,49 +340,71 @@ public class SegmentosService implements ISegmentosService {
 
 	@Override
 	public ResponseApi creaSegmentoOlp(String descripcionSegmento) {
-		ResponseApi resultado;
+		try {
+			ResponseApi resultado;
 
-		Segmento segmento = segmentosDao.findByDescripcionOlp(descripcionSegmento);
+			Segmento segmento = segmentosDao.findByDescripcionOlp(descripcionSegmento);
 
-		if (segmento == null) {
+			if (segmento == null) {
 
-			
-			Limites limites = new Limites(false, new MontosLimite(0.0, 0.0,0.0, 0.0), new MontosLimite(0.0, 0.0,0.0, 0.0));
+				Limites limites = new Limites(false, new MontosLimite(0.0, 0.0,0.0, 0.0), new MontosLimite(0.0, 0.0,0.0, 0.0));
 
-			TipoOperacion t410 = new TipoOperacion("410", "COMPRA EFECTIVO", 0.0);
-			TipoOperacion t411 = new TipoOperacion("411", "VENTA EFECTIVO", 0.0);
-			
-			t410.setLimites(limites);
-			t410.setActivo(true);
-			t411.setLimites(limites);
-			t411.setActivo(true);
+				TipoOperacion t410 = new TipoOperacion("410", "COMPRA EFECTIVO", 0.0);
+				TipoOperacion t411 = new TipoOperacion("411", "VENTA EFECTIVO", 0.0);
 
-			Divisa olp = new Divisa("OLP", "ONZA DE PLATA", Arrays.asList(t410, t411),true);			
-			
-			segmento = new Segmento(descripcionSegmento, true, Arrays.asList(olp));
+				t410.setLimites(limites);
+				t410.setActivo(true);
+				t411.setLimites(limites);
+				t411.setActivo(true);
 
-			InsertOneResult resultInsert = segmentosDao.insertOlp(segmento);
+				Divisa olp = new Divisa("OLP", "ONZA DE PLATA", Arrays.asList(t410, t411), true);
+				segmento = new Segmento(descripcionSegmento, true, Arrays.asList(olp));
 
-			if (resultInsert.getInsertedId() != null) {
+				InsertOneResult resultInsert = segmentosDao.insertOlp(segmento);
 
-				resultado = new ResponseApi(EstatusResponse.OK);
+				if (resultInsert != null && resultInsert.getInsertedId() != null) {
 
-				bitacora.registrar(AccionBitacora.REGISTRAR, "Registro del segmento: " + descripcionSegmento);
+					resultado = new ResponseApi(EstatusResponse.OK);
+
+					bitacora.registrar(AccionBitacora.REGISTRAR, "Registro del segmento: " + descripcionSegmento);
+
+				}
+				else {
+					resultado = new ResponseApi(EstatusResponse.ERROR_INTERNO,
+							Arrays.asList("No fue posible registrar el segmento OLP: la base de datos no confirmó la inserción."));
+				}
 
 			} 
 			else {
-				resultado = new ResponseApi(EstatusResponse.ERROR_INTERNO,
-						Arrays.asList("No fue posible registrar el segmento."));
+				LogApp.mensaje("Ya existe un segmento con la descripcion: " + descripcionSegmento);
+				resultado = new ResponseApi(EstatusResponse.PETICION_INCORRECTA,
+						Arrays.asList("Ya existe un segmento con esa descripcion"));
 			}
 
-		} 
-		else {
-			LogApp.mensaje("Ya existe un segmento con la descripcion: " + descripcionSegmento);
-			resultado = new ResponseApi(EstatusResponse.PETICION_INCORRECTA,
-					Arrays.asList("Ya existe un segmento con esa descripcion"));
+			return resultado;
+		}
+		catch (Exception e) {
+			String detalle = obtenerDetalleError(e);
+			LogApp.excepcion(e, "Error al registrar el segmento OLP con descripcion: " + descripcionSegmento);
+			return new ResponseApi(EstatusResponse.ERROR_INTERNO,
+					Arrays.asList("No fue posible registrar el segmento OLP: " + detalle));
+		}
+	}
+
+	/**
+	 * Obtiene la causa más específica para informar un error accionable sin
+	 * devolver el stack trace al consumidor.
+	 */
+	private String obtenerDetalleError(Exception exception) {
+		Throwable causa = exception;
+		while (causa.getCause() != null && causa.getCause() != causa) {
+			causa = causa.getCause();
 		}
 
-		return resultado;
+		String mensaje = causa.getMessage();
+		return mensaje == null || mensaje.trim().isEmpty()
+				? causa.getClass().getSimpleName()
+				: mensaje;
 	}
 
 	@Override
