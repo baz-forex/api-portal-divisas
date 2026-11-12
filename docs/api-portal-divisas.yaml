@@ -10164,7 +10164,8 @@ paths:
         required: true
         schema:
           "$ref": "#/definitions/Segmento"
-        x-example: *21
+        x-example:
+          descripcion: Pruebas Des asignación
       responses:
         '200':
           description: Operación exitosa

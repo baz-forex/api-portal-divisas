@@ -266,6 +266,16 @@ public class SegmentosServiceTest {
 		
 		response = segmentosService.creaSegmentoOlp("");
 		assertThat(response.getHttpStatus().value()).isEqualTo(HttpStatus.OK.value());
+
+		//--------------------------------------------------------------------
+
+		when(segmentosDao.findByDescripcionOlp(isA(String.class))).thenReturn(null);
+		when(segmentosDao.insertOlp(isA(Segmento.class)))
+				.thenThrow(new RuntimeException("Error de conexión con MongoDB"));
+
+		response = segmentosService.creaSegmentoOlp("Segmento con error");
+		assertThat(response.getHttpStatus().value()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		assertThat(response.getDetalles()).contains("No fue posible registrar el segmento OLP: Error de conexión con MongoDB");
 		
 	}
 
