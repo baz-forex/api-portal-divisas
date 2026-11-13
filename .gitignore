@@ -49,5 +49,5 @@ properties/**/*.local.properties
 #config/
 #secrets/
 
-docs/*
-!docs/api-portal-divisas.yaml
+#docs/*
+#!docs/api-portal-divisas.yaml
