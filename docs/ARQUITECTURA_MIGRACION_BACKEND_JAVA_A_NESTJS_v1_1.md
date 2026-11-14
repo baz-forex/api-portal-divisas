@@ -242,7 +242,7 @@ microservice-dvs-template   # Estructura, convenciones y ejemplos
 
 **La elección debe validarse contra la organización actual:** si existe un monorepo con gobierno maduro, no es necesaria una migración de repositorios únicamente para adoptar microservicios.
 
-### 5.2 Posibles paquetes corporativos
+### 5.2 Paquetes corporativos
 
 | Paquete ilustrativo | Versión | Responsabilidad permitida |
 |---|--- |---|
