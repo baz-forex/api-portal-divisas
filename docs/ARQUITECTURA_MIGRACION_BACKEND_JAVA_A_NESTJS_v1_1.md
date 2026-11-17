@@ -23,7 +23,7 @@ Definir criterios de arquitectura de software para evaluar el estado actual de u
 ### 1.2 Objetivos específicos
 
 1. Identificar módulos, capacidades de negocio, dependencias, consumidores y reglas existentes en el monolito.
-2. Detectar límites de dominio (*bounded contexts*) y candidatos a extracción.
+2. Detectar límites de dominio (_bounded contexts_) y candidatos a extracción.
 3. Definir la estructura interna de referencia de los nuevos servicios.
 4. Establecer decisiones sobre persistencia, comunicación, contratos, errores y resiliencia.
 5. Seleccionar tecnologías y librerías para desarrollo, documentación, calidad y observabilidad de aplicaciones.
@@ -54,25 +54,25 @@ Definir criterios de arquitectura de software para evaluar el estado actual de u
 
 ## 2. Principios de arquitectura
 
-| ID | Principio | Regla verificable |
-|---|---|---|
-| ARQ-01 | Diseño orientado al negocio | Delimitar servicios por capacidad de negocio o bounded context, no por clase, tabla o endpoint. |
-| ARQ-02 | Migración incremental | Mantener convivencia controlada entre monolito y servicios nuevos mediante Strangler Fig. |
-| ARQ-03 | Independencia de dominio | El dominio no importa NestJS, Mongoose, drivers, AWS SDK ni DTO HTTP. |
-| ARQ-04 | Dependencias hacia el interior | Las implementaciones concretas dependen de contratos del dominio/aplicación, no al revés. |
-| ARQ-05 | Propiedad de los datos | Un único propietario de escritura por entidad/dato; prohibir acceso directo de un servicio a las colecciones de otro. |
-| ARQ-06 | Contratos explícitos | Versionar y probar contratos API y de eventos. |
-| ARQ-07 | Compatibilidad demostrada | Validar las características utilizadas de MongoDB contra la versión real de DocumentDB objetivo. |
-| ARQ-08 | Resiliencia explícita | Establecer timeout, políticas de reintento, idempotencia y manejo de fallas cuando aplique. |
-| ARQ-09 | Observabilidad por defecto | Generar logs estructurados, métricas y trazas correlacionables en el código. |
-| ARQ-10 | Complejidad justificada | Adoptar CQRS, Saga, Kafka, Event Sourcing u otros patrones solo con caso de uso y ADR. |
-| ARQ-11 | Librerías mínimas y estables | Compartir infraestructura transversal y contratos necesarios; evitar un dominio corporativo común altamente acoplado. |
-| ARQ-12 | Paridad medible | Comparar respuestas, reglas y efectos sobre los datos antes de transferir tráfico. |
+| ID     | Principio                      | Regla verificable                                                                                                     |
+| ------ | ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| ARQ-01 | Diseño orientado al negocio    | Delimitar servicios por capacidad de negocio o bounded context, no por clase, tabla o endpoint.                       |
+| ARQ-02 | Migración incremental          | Mantener convivencia controlada entre monolito y servicios nuevos mediante Strangler Fig.                             |
+| ARQ-03 | Independencia de dominio       | El dominio no importa NestJS, Mongoose, drivers, AWS SDK ni DTO HTTP.                                                 |
+| ARQ-04 | Dependencias hacia el interior | Las implementaciones concretas dependen de contratos del dominio/aplicación, no al revés.                             |
+| ARQ-05 | Propiedad de los datos         | Un único propietario de escritura por entidad/dato; prohibir acceso directo de un servicio a las colecciones de otro. |
+| ARQ-06 | Contratos explícitos           | Versionar y probar contratos API y de eventos.                                                                        |
+| ARQ-07 | Compatibilidad demostrada      | Validar las características utilizadas de MongoDB contra la versión real de DocumentDB objetivo.                      |
+| ARQ-08 | Resiliencia explícita          | Establecer timeout, políticas de reintento, idempotencia y manejo de fallas cuando aplique.                           |
+| ARQ-09 | Observabilidad por defecto     | Generar logs estructurados, métricas y trazas correlacionables en el código.                                          |
+| ARQ-10 | Complejidad justificada        | Adoptar CQRS, Saga, Kafka, Event Sourcing u otros patrones solo con caso de uso y ADR.                                |
+| ARQ-11 | Librerías mínimas y estables   | Compartir infraestructura transversal y contratos necesarios; evitar un dominio corporativo común altamente acoplado. |
+| ARQ-12 | Paridad medible                | Comparar respuestas, reglas y efectos sobre los datos antes de transferir tráfico.                                    |
 
 ### 2.1 Estilos y patrones seleccionados
 
 - **Arquitectura de microservicios:** estilo objetivo cuando existan límites de negocio y autonomía real. No implica fragmentar de forma obligatoria todos los módulos.
-- **DDD estratégico:** discovery, subdominios, *bounded contexts*, *context mapping* y lenguaje ubicuo.
+- **DDD estratégico:** discovery, subdominios, _bounded contexts_, _context mapping_ y lenguaje ubicuo.
 - **DDD táctico:** entidades, value objects, agregados, servicios y eventos de dominio donde aporten claridad.
 - **Arquitectura hexagonal (Ports & Adapters):** desacoplar lógica de negocio y efectos externos.
 - **Clean Architecture:** aplicar la regla de dependencias; **no crear estructuras duplicadas** para Hexagonal y Clean.
@@ -88,27 +88,27 @@ Definir criterios de arquitectura de software para evaluar el estado actual de u
 
 > La tabla es una línea base **propuesta**, no una lista de dependencias que deban instalarse todas. La versión exacta de cada componente deberá fijarse tras revisar compatibilidad, soporte corporativo y matriz de versiones del proyecto.
 
-| Área | Propuesta | Decisión / criterio |
-|---|---|---|
-| Lenguaje | TypeScript con `strict: true` | Estándar objetivo. |
-| Runtime | Node.js versión LTS aprobada | No fijar un número sin matriz de soporte institucional. |
-| Framework | NestJS | Estándar objetivo de aplicación. |
-| Package manager | pnpm | Preferido; versiones controladas. |
-| HTTP adapter | Express | Elegir según compatibilidad del ecosistema y necesidades existentes; no cambiar por rendimiento supuesto. |
-| API | REST + OpenAPI 3.x | Contratos explícitos y versionables. |
-| Validación | `class-validator`/`class-transformer` o Zod | Elegir una convención principal por servicio/plataforma. |
-| Persistencia documental | MongoDB / Amazon DocumentDB | La plataforma concreta debe confirmarse. |
-| Modelo de persistencia | Mongoose o driver oficial | Mongoose preferente si las funciones usadas son compatibles con DocumentDB. |
-| Testing unitario | Vitest | Preferir la herramienta ya estandarizada. |
-| HTTP/e2e | Supertest o equivalente | Prueba de contratos HTTP. |
-| Integración | Testcontainers y entorno DocumentDB real | MongoDB local no sustituye el test de compatibilidad DocumentDB. |
-| Contract tests | OpenAPI diff / Pact según uso | Validar consumidores y proveedores. |
-| Calidad | ESLint + Prettier + SonarQube | Alinear con la plataforma existente. |
-| Logging | Logger corporativo `@gs/logger`| Estructurado y sin datos confidenciales. |
-| Telemetría | OpenTelemetry | Instrumentación de aplicación independiente de backend. |
-| Mensajería | AWS SDK v3 + adaptadores; SQS/EventBridge como candidatos | Confirmar junto con el área AWS; no son dependencias obligatorias. |
-| Documentación | Markdown + ADR + C4 + OpenAPI | Artefactos versionados junto al código. |
-| Especificaciones | OpenSpec / SDD | Proceso opcional, sujeto a estándares del equipo. |
+| Área                    | Propuesta                                                 | Decisión / criterio                                                                                       |
+| ----------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Lenguaje                | TypeScript con `strict: true`                             | Estándar objetivo.                                                                                        |
+| Runtime                 | Node.js versión LTS aprobada                              | No fijar un número sin matriz de soporte institucional.                                                   |
+| Framework               | NestJS                                                    | Estándar objetivo de aplicación.                                                                          |
+| Package manager         | pnpm                                                      | Preferido; versiones controladas.                                                                         |
+| HTTP adapter            | Express                                                   | Elegir según compatibilidad del ecosistema y necesidades existentes; no cambiar por rendimiento supuesto. |
+| API                     | REST + OpenAPI 3.x                                        | Contratos explícitos y versionables.                                                                      |
+| Validación              | `class-validator`/`class-transformer` o Zod               | Elegir una convención principal por servicio/plataforma.                                                  |
+| Persistencia documental | MongoDB / Amazon DocumentDB                               | La plataforma concreta debe confirmarse.                                                                  |
+| Modelo de persistencia  | Mongoose o driver oficial                                 | Mongoose preferente si las funciones usadas son compatibles con DocumentDB.                               |
+| Testing unitario        | Vitest                                                    | Preferir la herramienta ya estandarizada.                                                                 |
+| HTTP/e2e                | Supertest o equivalente                                   | Prueba de contratos HTTP.                                                                                 |
+| Integración             | Testcontainers y entorno DocumentDB real                  | MongoDB local no sustituye el test de compatibilidad DocumentDB.                                          |
+| Contract tests          | OpenAPI diff / Pact según uso                             | Validar consumidores y proveedores.                                                                       |
+| Calidad                 | ESLint + Prettier + SonarQube                             | Alinear con la plataforma existente.                                                                      |
+| Logging                 | Logger corporativo `@gs/logger`                           | Estructurado y sin datos confidenciales.                                                                  |
+| Telemetría              | OpenTelemetry                                             | Instrumentación de aplicación independiente de backend.                                                   |
+| Mensajería              | AWS SDK v3 + adaptadores; SQS/EventBridge como candidatos | Confirmar junto con el área AWS; no son dependencias obligatorias.                                        |
+| Documentación           | Markdown + ADR + C4 + OpenAPI                             | Artefactos versionados junto al código.                                                                   |
+| Especificaciones        | OpenSpec / SDD                                            | Proceso opcional, sujeto a estándares del equipo.                                                         |
 
 ### 3.1 Criterios para aprobar dependencias
 
@@ -192,16 +192,17 @@ microservice-dvs-users/
 ├── tsconfig.json
 └── README.md
 ```
+
 **Regla de nombrado de microservicio:** el nombre debe empezar con el prefijo `microservice-dvs-*`. El `*` es el nombre representativo de las funcionalidades del propio servicio o del módulo de negocio (`domain`), por ejemplo: `core`, `tef`,`users`, `catalogs`, `auth`, `security`, etc.
 
 ### 4.3 Reglas por capa
 
-| Capa | Puede contener | No debe contener |
-|---|---|---|
-| `domain` | Invariantes, entidades, agregados, eventos de dominio, reglas puras | Imports de NestJS, Mongoose, AWS SDK, controllers, schemas de base de datos |
-| `application` | Casos de uso, orquestación y puertos externos | Consultas a Mongoose, lógica HTTP y configuración AWS |
-| `infrastructure` | Adaptadores concretos de persistencia, mensajería, servicios externos y mappers | Reglas de negocio que deberían permanecer en dominio |
-| `presentation` | Controllers, request/response DTO, validación de entrada y serialización | Acceso directo a base de datos o reglas complejas de negocio |
+| Capa             | Puede contener                                                                  | No debe contener                                                            |
+| ---------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `domain`         | Invariantes, entidades, agregados, eventos de dominio, reglas puras             | Imports de NestJS, Mongoose, AWS SDK, controllers, schemas de base de datos |
+| `application`    | Casos de uso, orquestación y puertos externos                                   | Consultas a Mongoose, lógica HTTP y configuración AWS                       |
+| `infrastructure` | Adaptadores concretos de persistencia, mensajería, servicios externos y mappers | Reglas de negocio que deberían permanecer en dominio                        |
+| `presentation`   | Controllers, request/response DTO, validación de entrada y serialización        | Acceso directo a base de datos o reglas complejas de negocio                |
 
 **Regla de composición:** los puertos se declaran en las capas internas y los adaptadores se conectan en `*.module.ts` mediante tokens de inyección de NestJS. Una interfaz TypeScript no es un token de inyección en runtime.
 
@@ -215,7 +216,7 @@ export interface CustomerRepository {
 }
 
 // application/ports/tokens.ts
-export const CUSTOMER_REPOSITORY = Symbol('CUSTOMER_REPOSITORY');
+export const CUSTOMER_REPOSITORY = Symbol("CUSTOMER_REPOSITORY");
 ```
 
 La implementación Mongoose pertenece a infraestructura; el caso de uso solo conoce el contrato y su token de composición.
@@ -236,7 +237,12 @@ gs-auth                     # Librería privada
 gs-crypto                   # Librería privada
 gs-documentdb               # Librería privada
 gs-errors                   # Librería privada
+gs-health                   # Librería privada
 gs-logger                   # Librería privada
+gs-proxy                    # Librería privada
+gs-swagges                  # Librería privada
+gs-utils                    # Librería privada
+gsa-decorators              # Librería privada
 microservice-dvs-template   # Estructura, convenciones y ejemplos
 ```
 
@@ -244,18 +250,18 @@ microservice-dvs-template   # Estructura, convenciones y ejemplos
 
 ### 5.2 Paquetes corporativos
 
-| Paquete ilustrativo | Versión | Responsabilidad permitida |
-|---|--- |---|
-| `@gs/auth` | `0.1.1` | Proporciona autenticación y autorización para aplicaciones NestJS. Incluye módulos y guards para JWT, Okta, roles y aplicaciones de comercio, además de estrategias, decoradores y manejo de expiración de tokens. No se importa directamente en el código fuente actual; es una dependencia corporativa disponible para el servicio. |
-| `@gs/crypto` | `0.1.1`| Centraliza funciones criptográficas para proteger información. Expone cifrado simétrico y asimétrico, PGP, hash, HMAC, gestión de llaves, interceptores, guards y decoradores para cifrar o descifrar solicitudes y respuestas. En este servicio se usa para el cifrado de valores y mediante `UseEncryptionV2`, `EncryptionMethod` y `AsymmetricCryptoService`. |
-| `@gs/documentdb` | `0.1.1` | Integra NestJS/Mongoose con Amazon DocumentDB, incluyendo configuración de conexión, soporte de certificado SSL, lectura de configuración y servicios asociados. El módulo se importa desde `src/app.module.ts`. |
-| `@gs/errors` | `0.1.1` | Estandariza errores HTTP y su tratamiento. Incluye excepciones personalizadas —por ejemplo, bad request, not found, unauthorized, no content e internal server error—, códigos de error y un filtro de excepciones HTTP. Se usa en controladores, validaciones, mappers y filtros del servicio. |
-| `@gs/health` | `0.1.1` | Agrega endpoints y módulos de health checks y status para exponer el estado de salud de la aplicación. El módulo se integra en `src/modules/common/common.module.ts`. |
-| `@gs/logger` | `0.1.1` | Proporciona logging y monitoreo de la aplicación. Incluye módulo de monitoreo, servicio de logger, transports para consola y HTTP, correlación de solicitudes y capacidades para enviar logs a servicios de AWS/S3. Se usa en `src/main.ts` y `src/app.module.ts`. |
-| `@gs/proxy` | `0.1.1` | Implementa capacidades para autenticación y comunicación mediante un proxy corporativo. Incluye guards, interceptor, servicio de proxy, gestión de credenciales, configuración y excepciones relacionadas con tokens y autenticación. Se usa en los controladores mediante `ProxyAuthGuard` y en la configuración Swagger. |
-| `@gs/swagger` | `0.1.2` | Contiene utilidades corporativas para documentar APIs con Swagger/OpenAPI: decoradores, constantes y esquemas estandarizados de respuestas exitosas y de error. Se usa en los decoradores y configuración Swagger del servicio. |
-| `@gs/utils` | `0.1.1` | Reúne utilidades reutilizables para aplicaciones corporativas, como validaciones, transformación y clonación de objetos, manejo de strings, números y JSON, generación de códigos y tokens, diferencias entre objetos, procesamiento de streams y servicios relacionados con listas negras. Es una dependencia transversal de varios paquetes corporativos. |
-| `@gsa/decorators` | `~0.0.7` | Proporciona decoradores personalizados para validación y transformación de datos en NestJS, incluyendo validaciones comunes de espacios, enteros, números como string, opcionalidad y valores booleanos, además de decoradores de QA para strings y números requeridos u opcionales. |
+| Paquete ilustrativo | Versión  | Responsabilidad permitida                                                                                                                                                                                                                                                                                                                                        |
+| ------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@gs/auth`          | `0.1.1`  | Proporciona autenticación y autorización para aplicaciones NestJS. Incluye módulos y guards para JWT, Okta, roles y aplicaciones de comercio, además de estrategias, decoradores y manejo de expiración de tokens. No se importa directamente en el código fuente actual; es una dependencia corporativa disponible para el servicio.                            |
+| `@gs/crypto`        | `0.1.1`  | Centraliza funciones criptográficas para proteger información. Expone cifrado simétrico y asimétrico, PGP, hash, HMAC, gestión de llaves, interceptores, guards y decoradores para cifrar o descifrar solicitudes y respuestas. En este servicio se usa para el cifrado de valores y mediante `UseEncryptionV2`, `EncryptionMethod` y `AsymmetricCryptoService`. |
+| `@gs/documentdb`    | `0.1.1`  | Integra NestJS/Mongoose con Amazon DocumentDB, incluyendo configuración de conexión, soporte de certificado SSL, lectura de configuración y servicios asociados. El módulo se importa desde `src/app.module.ts`.                                                                                                                                                 |
+| `@gs/errors`        | `0.1.1`  | Estandariza errores HTTP y su tratamiento. Incluye excepciones personalizadas —por ejemplo, bad request, not found, unauthorized, no content e internal server error—, códigos de error y un filtro de excepciones HTTP. Se usa en controladores, validaciones, mappers y filtros del servicio.                                                                  |
+| `@gs/health`        | `0.1.1`  | Agrega endpoints y módulos de health checks y status para exponer el estado de salud de la aplicación. El módulo se integra en `src/modules/common/common.module.ts`.                                                                                                                                                                                            |
+| `@gs/logger`        | `0.1.1`  | Proporciona logging y monitoreo de la aplicación. Incluye módulo de monitoreo, servicio de logger, transports para consola y HTTP, correlación de solicitudes y capacidades para enviar logs a servicios de AWS/S3. Se usa en `src/main.ts` y `src/app.module.ts`.                                                                                               |
+| `@gs/proxy`         | `0.1.1`  | Implementa capacidades para autenticación y comunicación mediante un proxy corporativo. Incluye guards, interceptor, servicio de proxy, gestión de credenciales, configuración y excepciones relacionadas con tokens y autenticación. Se usa en los controladores mediante `ProxyAuthGuard` y en la configuración Swagger.                                       |
+| `@gs/swagger`       | `0.1.2`  | Contiene utilidades corporativas para documentar APIs con Swagger/OpenAPI: decoradores, constantes y esquemas estandarizados de respuestas exitosas y de error. Se usa en los decoradores y configuración Swagger del servicio.                                                                                                                                  |
+| `@gs/utils`         | `0.1.1`  | Reúne utilidades reutilizables para aplicaciones corporativas, como validaciones, transformación y clonación de objetos, manejo de strings, números y JSON, generación de códigos y tokens, diferencias entre objetos, procesamiento de streams y servicios relacionados con listas negras. Es una dependencia transversal de varios paquetes corporativos.      |
+| `@gsa/decorators`   | `~0.0.7` | Proporciona decoradores personalizados para validación y transformación de datos en NestJS, incluyendo validaciones comunes de espacios, enteros, números como string, opcionalidad y valores booleanos, además de decoradores de QA para strings y números requeridos u opcionales.                                                                             |
 
 **Seguridad como capacidad transversal:** evaluar si los adaptadores de validación de tokens, guards, políticas y contexto de identidad deben formar parte de una librería corporativa propia. Mantener separadas autenticación y autorización; no inventar interfaces ni proveedores sin verificar el código Java y acuerdos corporativos.
 
@@ -291,16 +297,16 @@ Amazon DocumentDB es un servicio compatible con determinadas APIs de MongoDB, **
 
 Registrar para cada operación actual:
 
-| Característica | Uso en Java actual | Versión fuente MongoDB | Compatibilidad DocumentDB objetivo | Prueba requerida | Resultado |
-|---|---|---|---|---|---|
-| Aggregation Pipeline | Por levantar | Por levantar | Pendiente | Casos reales y carga | Pendiente |
-| Índices únicos/compuestos | Por levantar | Por levantar | Pendiente | Creación, errores, consultas | Pendiente |
-| Transacciones | Por levantar | Por levantar | Pendiente | Atomicidad y fallas | Pendiente |
-| Change Streams | Por levantar | Por levantar | Pendiente | Reanudación/duplicados | Pendiente |
-| Retryable writes | Por levantar | Por levantar | Pendiente | Matriz por versión de motor | Pendiente |
-| Collation/operadores | Por levantar | Por levantar | Pendiente | Consultas críticas | Pendiente |
-| TTL / expiración | Por levantar | Por levantar | Pendiente | Comportamiento y tiempos | Pendiente |
-| Bulk writes | Por levantar | Por levantar | Pendiente | Atomicidad parcial y errores | Pendiente |
+| Característica            | Uso en Java actual | Versión fuente MongoDB | Compatibilidad DocumentDB objetivo | Prueba requerida             | Resultado |
+| ------------------------- | ------------------ | ---------------------- | ---------------------------------- | ---------------------------- | --------- |
+| Aggregation Pipeline      | Por levantar       | Por levantar           | Pendiente                          | Casos reales y carga         | Pendiente |
+| Índices únicos/compuestos | Por levantar       | Por levantar           | Pendiente                          | Creación, errores, consultas | Pendiente |
+| Transacciones             | Por levantar       | Por levantar           | Pendiente                          | Atomicidad y fallas          | Pendiente |
+| Change Streams            | Por levantar       | Por levantar           | Pendiente                          | Reanudación/duplicados       | Pendiente |
+| Retryable writes          | Por levantar       | Por levantar           | Pendiente                          | Matriz por versión de motor  | Pendiente |
+| Collation/operadores      | Por levantar       | Por levantar           | Pendiente                          | Consultas críticas           | Pendiente |
+| TTL / expiración          | Por levantar       | Por levantar           | Pendiente                          | Comportamiento y tiempos     | Pendiente |
+| Bulk writes               | Por levantar       | Por levantar           | Pendiente                          | Atomicidad parcial y errores | Pendiente |
 
 No adoptar opciones del driver (p. ej., `retryWrites`) sin verificar el comportamiento de la versión y configuración DocumentDB a utilizar.
 
@@ -321,14 +327,14 @@ No adoptar opciones del driver (p. ej., `retryWrites`) sin verificar el comporta
 
 ### 7.1 Regla de selección
 
-| Necesidad | Mecanismo candidato | Regla |
-|---|---|---|
-| Consulta o comando con respuesta inmediata | REST/HTTP o gRPC | Minimizar cadenas síncronas y establecer timeout. |
-| Trabajo diferido | Cola de mensajes | Procesamiento al menos una vez; diseñar consumidor idempotente. |
-| Evento de negocio publicado a múltiples consumidores | Bus de eventos / fan-out | Contrato versionado y evolución compatible. |
-| Flujo de larga duración | Orquestación o Saga | Justificar con riesgo, compensaciones y consistencia. |
+| Necesidad                                            | Mecanismo candidato      | Regla                                                           |
+| ---------------------------------------------------- | ------------------------ | --------------------------------------------------------------- |
+| Consulta o comando con respuesta inmediata           | REST/HTTP o gRPC         | Minimizar cadenas síncronas y establecer timeout.               |
+| Trabajo diferido                                     | Cola de mensajes         | Procesamiento al menos una vez; diseñar consumidor idempotente. |
+| Evento de negocio publicado a múltiples consumidores | Bus de eventos / fan-out | Contrato versionado y evolución compatible.                     |
+| Flujo de larga duración                              | Orquestación o Saga      | Justificar con riesgo, compensaciones y consistencia.           |
 
-**Servicios específicos AWS:** SQS, SNS, EventBridge o Step Functions son *candidatos*, no selección impuesta; el equipo AWS define su disponibilidad y operación.
+**Servicios específicos AWS:** SQS, SNS, EventBridge o Step Functions son _candidatos_, no selección impuesta; el equipo AWS define su disponibilidad y operación.
 
 ### 7.2 Contratos API
 
@@ -357,7 +363,7 @@ N/A
 - No utilizar CQRS solo por tener métodos `GET` y `POST`.
 - No implementar Event Sourcing sin un requerimiento explícito de histórico, reconstrucción y operación.
 - No transformar cada método interno en una llamada entre microservicios.
-- No realizar *dual write* monolito↔microservicio sin mecanismo de consistencia definido.
+- No realizar _dual write_ monolito↔microservicio sin mecanismo de consistencia definido.
 
 ---
 
@@ -365,15 +371,15 @@ N/A
 
 ### 8.1 Pirámide de pruebas
 
-| Nivel | Objeto | Herramienta orientativa | Criterio |
-|---|---|---|---|
-| Unitarias | Entidades, value objects, reglas y casos de uso | Vitest/Jest | Deterministas, sin dependencias externas. |
-| Integración | Repositorios, adaptadores y mappers | Testcontainers, entornos controlados | Verificar persistencia y contratos reales. |
-| Compatibilidad BD | Operadores/consultas existentes | Entorno DocumentDB real | Bloqueante ante incompatibilidades. |
-| Contrato | Consumidor/proveedor API y eventos | OpenAPI/Pact | No romper consumidores sin acuerdo. |
-| End-to-end | Flujos relevantes | Supertest/herramientas HTTP | Paridad funcional y de errores. |
-| Rendimiento | Carga/concurrencia/latencia | k6 o equivalente | Cumplir NFR definidos. |
-| Resiliencia | Fallas de dependencia/reintentos | Inyección controlada de errores | Recuperación y ausencia de duplicados. |
+| Nivel             | Objeto                                          | Herramienta orientativa              | Criterio                                   |
+| ----------------- | ----------------------------------------------- | ------------------------------------ | ------------------------------------------ |
+| Unitarias         | Entidades, value objects, reglas y casos de uso | Vitest/Jest                          | Deterministas, sin dependencias externas.  |
+| Integración       | Repositorios, adaptadores y mappers             | Testcontainers, entornos controlados | Verificar persistencia y contratos reales. |
+| Compatibilidad BD | Operadores/consultas existentes                 | Entorno DocumentDB real              | Bloqueante ante incompatibilidades.        |
+| Contrato          | Consumidor/proveedor API y eventos              | OpenAPI/Pact                         | No romper consumidores sin acuerdo.        |
+| End-to-end        | Flujos relevantes                               | Supertest/herramientas HTTP          | Paridad funcional y de errores.            |
+| Rendimiento       | Carga/concurrencia/latencia                     | k6 o equivalente                     | Cumplir NFR definidos.                     |
+| Resiliencia       | Fallas de dependencia/reintentos                | Inyección controlada de errores      | Recuperación y ausencia de duplicados.     |
 
 La cobertura de código puede adoptar un objetivo interno (p. ej., 80%) pero **no sustituye pruebas de comportamiento, contratos ni controles de integración**.
 
@@ -415,14 +421,14 @@ El almacenamiento, visualización y operación del sistema de observabilidad per
 
 ### 8A.2 Arquitectura objetivo
 
-| Responsabilidad Spring | Posible adaptación NestJS | Condición de aceptación |
-|---|---|---|
-| Filter chain y matchers | Middleware/Guards/Interceptors según responsabilidad | Equivalencia por endpoint y precedencia de reglas |
-| Authentication providers | Strategy/adapter de autenticación y validación de credenciales/tokens | Contrato del IdP y validación criptográfica equivalente |
-| `SecurityContext` | Principal tipado, request context y propagación segura | Mismo usuario/tenant/roles/scopes autorizados |
-| `@PreAuthorize`/políticas | Guards/policies por recurso y acción | Paridad de permisos y denegaciones |
-| Exception handlers | Guards + Exception Filters | Códigos 401/403 y cuerpos compatibles según contrato |
-| Session/CSRF/CORS | Configuración de aplicación según modelo real | Evaluación explícita; no deshabilitar controles por defecto |
+| Responsabilidad Spring    | Posible adaptación NestJS                                             | Condición de aceptación                                     |
+| ------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Filter chain y matchers   | Middleware/Guards/Interceptors según responsabilidad                  | Equivalencia por endpoint y precedencia de reglas           |
+| Authentication providers  | Strategy/adapter de autenticación y validación de credenciales/tokens | Contrato del IdP y validación criptográfica equivalente     |
+| `SecurityContext`         | Principal tipado, request context y propagación segura                | Mismo usuario/tenant/roles/scopes autorizados               |
+| `@PreAuthorize`/políticas | Guards/policies por recurso y acción                                  | Paridad de permisos y denegaciones                          |
+| Exception handlers        | Guards + Exception Filters                                            | Códigos 401/403 y cuerpos compatibles según contrato        |
+| Session/CSRF/CORS         | Configuración de aplicación según modelo real                         | Evaluación explícita; no deshabilitar controles por defecto |
 
 **Separación de responsabilidades:** autenticación verifica identidad y credenciales/tokens; autorización determina permisos sobre recursos y operaciones. Los controles técnicos pertenecen a presentation/infrastructure; las reglas de autorización de negocio se modelan con puertos/políticas sin acoplar dominio a NestJS.
 
@@ -455,19 +461,19 @@ El almacenamiento, visualización y operación del sistema de observabilidad per
 
 ### 9.1 Inventario obligatorio
 
-| Categoría | Información a recabar | Evidencia sugerida |
-|---|---|---|
-| Aplicación | Versión Java, Spring Boot, módulos, dependencias Maven/Gradle, configuración | `../pom.xml`/`build.gradle`, árbol de módulos |
-| Exposición | Endpoints, métodos HTTP, DTO, códigos de respuesta, versiones, clientes | Controllers, OpenAPI, logs, consumidores |
-| Negocio | Casos de uso, reglas, validaciones, workflows y excepciones | Services, documentación, pruebas, entrevistas |
-| Dominio | Entidades, agregados candidatos y lenguaje de negocio | Clases de negocio, diagramas, workshops |
-| Datos | Colecciones, índices, consultas, transacciones, ownership | Repositories, consultas, esquemas, métricas |
-| Integraciones | APIs externas, colas, tareas programadas, archivos, notificaciones | Clients, jobs, configuración |
-| Acoplamiento | Dependencias entre módulos y lecturas/escrituras cruzadas | Mapa estático, trazas y análisis manual |
-| Comportamiento | Latencia, volumen, errores, concurrencia, horarios críticos | Monitoreo/telemetría existente |
-| Pruebas | Cobertura funcional y casos faltantes | Unit/integration/e2e existentes |
+| Categoría        | Información a recabar                                                                                                                                                                                   | Evidencia sugerida                                             |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Aplicación       | Versión Java, Spring Boot, módulos, dependencias Maven/Gradle, configuración                                                                                                                            | `../pom.xml`/`build.gradle`, árbol de módulos                  |
+| Exposición       | Endpoints, métodos HTTP, DTO, códigos de respuesta, versiones, clientes                                                                                                                                 | Controllers, OpenAPI, logs, consumidores                       |
+| Negocio          | Casos de uso, reglas, validaciones, workflows y excepciones                                                                                                                                             | Services, documentación, pruebas, entrevistas                  |
+| Dominio          | Entidades, agregados candidatos y lenguaje de negocio                                                                                                                                                   | Clases de negocio, diagramas, workshops                        |
+| Datos            | Colecciones, índices, consultas, transacciones, ownership                                                                                                                                               | Repositories, consultas, esquemas, métricas                    |
+| Integraciones    | APIs externas, colas, tareas programadas, archivos, notificaciones                                                                                                                                      | Clients, jobs, configuración                                   |
+| Acoplamiento     | Dependencias entre módulos y lecturas/escrituras cruzadas                                                                                                                                               | Mapa estático, trazas y análisis manual                        |
+| Comportamiento   | Latencia, volumen, errores, concurrencia, horarios críticos                                                                                                                                             | Monitoreo/telemetría existente                                 |
+| Pruebas          | Cobertura funcional y casos faltantes                                                                                                                                                                   | Unit/integration/e2e existentes                                |
 | Seguridad Spring | SecurityFilterChain/WebSecurityConfigurerAdapter legado, filtros, AuthenticationProvider, UserDetailsService, JWT/OAuth2/OIDC, roles/claims, anotaciones, CSRF/CORS/sesiones, errores 401/403 y pruebas | Código, configuración y tests; identificar dependencias de IdP |
-| Plataforma | **Solo restricciones de integración de aplicación** | Acuerdos del equipo AWS |
+| Plataforma       | **Solo restricciones de integración de aplicación**                                                                                                                                                     | Acuerdos del equipo AWS                                        |
 
 ### 9.2 Preguntas específicas sobre el código Java
 
@@ -486,19 +492,19 @@ El almacenamiento, visualización y operación del sistema de observabilidad per
 
 ### 9.3 Mapeo de equivalencias conceptuales Java → NestJS
 
-| Java / Spring Boot | NestJS / TypeScript | Precaución |
-|---|---|---|
-| `@RestController` | `@Controller` | Conservar contratos observables, no copiar estructura ciegamente. |
-| `@Service` | Provider/caso de uso | Separar reglas de dominio de adaptadores. |
-| `@Repository` / Spring Data | Puerto + adaptador Mongoose/driver | No confundir documento persistido con entidad de dominio. |
-| Bean Injection | Providers + tokens DI | Interfaces TS desaparecen en runtime. |
-| `@ControllerAdvice` | Exception Filters | Mantener contrato de errores. |
-| Bean Validation | Pipes + validación elegida | Diferencias de coerción y validación. |
-| `@Scheduled` | Scheduler / consumidor de mensajes | Analizar semántica de concurrencia y reintentos. |
-| `@Transactional` | Transacciones soportadas por driver/BD | Verificar alcance y compatibilidad de DocumentDB. |
-| `CompletableFuture`/async | `async`/`await`, colas | Evitar trasladar mecánicamente semántica de threads. |
-| DTO Java | Request/response DTO TypeScript | Revisar serialización, valores nulos y fechas. |
-| Modelos MongoDB | Schemas Mongoose + mappers | Revisar operadores, tipos BSON e índices. |
+| Java / Spring Boot          | NestJS / TypeScript                    | Precaución                                                        |
+| --------------------------- | -------------------------------------- | ----------------------------------------------------------------- |
+| `@RestController`           | `@Controller`                          | Conservar contratos observables, no copiar estructura ciegamente. |
+| `@Service`                  | Provider/caso de uso                   | Separar reglas de dominio de adaptadores.                         |
+| `@Repository` / Spring Data | Puerto + adaptador Mongoose/driver     | No confundir documento persistido con entidad de dominio.         |
+| Bean Injection              | Providers + tokens DI                  | Interfaces TS desaparecen en runtime.                             |
+| `@ControllerAdvice`         | Exception Filters                      | Mantener contrato de errores.                                     |
+| Bean Validation             | Pipes + validación elegida             | Diferencias de coerción y validación.                             |
+| `@Scheduled`                | Scheduler / consumidor de mensajes     | Analizar semántica de concurrencia y reintentos.                  |
+| `@Transactional`            | Transacciones soportadas por driver/BD | Verificar alcance y compatibilidad de DocumentDB.                 |
+| `CompletableFuture`/async   | `async`/`await`, colas                 | Evitar trasladar mecánicamente semántica de threads.              |
+| DTO Java                    | Request/response DTO TypeScript        | Revisar serialización, valores nulos y fechas.                    |
+| Modelos MongoDB             | Schemas Mongoose + mappers             | Revisar operadores, tipos BSON e índices.                         |
 
 **Migración de Spring Security:** analizar y mapear explícitamente cada responsabilidad y regla a guards, estrategias de autenticación, validación de token, authorization policies y filtros/interceptores de NestJS según corresponda. Conservar la semántica observable de permisos, errores 401/403 y tratamiento de identidad; no trasladar filtros mecánicamente. La integración con IdP corporativo existente debe verificarse y no sustituirse sin aprobación.
 
@@ -617,31 +623,31 @@ independent_deployment_feasible: unknown
 
 ### 11.1 ADR obligatorios sugeridos
 
-| ADR | Decisión a registrar |
-|---|---|
-| ADR-001 | Bounded contexts y granularidad de microservicios. |
+| ADR     | Decisión a registrar                                       |
+| ------- | ---------------------------------------------------------- |
+| ADR-001 | Bounded contexts y granularidad de microservicios.         |
 | ADR-002 | Multirepo vs monorepo y publicación de librerías privadas. |
-| ADR-003 | Express. |
-| ADR-004 | Mongoose. |
-| ADR-005 | Compatibilidad MongoDB/DocumentDB y versión objetivo. |
-| ADR-006 | REST vs mensajería para cada integración. |
-| ADR-007 | Estrategia de contratos API y eventos. |
-| ADR-008 | Ownership de datos y estrategia de extracción. |
-| ADR-009 | Patrones Outbox, CQRS y Saga donde correspondan. |
-| ADR-010 | Baseline de observabilidad y quality gates de aplicación. |
+| ADR-003 | Express.                                                   |
+| ADR-004 | Mongoose.                                                  |
+| ADR-005 | Compatibilidad MongoDB/DocumentDB y versión objetivo.      |
+| ADR-006 | REST vs mensajería para cada integración.                  |
+| ADR-007 | Estrategia de contratos API y eventos.                     |
+| ADR-008 | Ownership de datos y estrategia de extracción.             |
+| ADR-009 | Patrones Outbox, CQRS y Saga donde correspondan.           |
+| ADR-010 | Baseline de observabilidad y quality gates de aplicación.  |
 
 ### 11.2 Registro de decisiones pendientes
 
-| ID | Pregunta | Responsable por definir | Estado |
-|---|---|---|---|
-| DEC-01 | ¿Qué versión de Java/Spring utiliza el monolito? | Equipo legacy | Pendiente |
-| DEC-02 | ¿Qué versión y topología de MongoDB se utiliza hoy? | Equipo datos | Pendiente |
-| DEC-03 | ¿Qué versión/configuración de DocumentDB será el destino? | Área AWS/datos | Pendiente |
-| DEC-04 | ¿Qué partes del negocio se quieren extraer primero? | Arquitectura/negocio | Pendiente |
-| DEC-05 | ¿Cuáles son las librerías corporativas ya existentes? | Plataforma backend | Pendiente |
-| DEC-06 | ¿Qué mecanismos de integración/mensajería están aprobados? | Arquitectura/área AWS | Pendiente |
+| ID     | Pregunta                                                                                                                                                       | Responsable por definir                                    | Estado    |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | --------- |
+| DEC-01 | ¿Qué versión de Java/Spring utiliza el monolito?                                                                                                               | Equipo legacy                                              | Pendiente |
+| DEC-02 | ¿Qué versión y topología de MongoDB se utiliza hoy?                                                                                                            | Equipo datos                                               | Pendiente |
+| DEC-03 | ¿Qué versión/configuración de DocumentDB será el destino?                                                                                                      | Área AWS/datos                                             | Pendiente |
+| DEC-04 | ¿Qué partes del negocio se quieren extraer primero?                                                                                                            | Arquitectura/negocio                                       | Pendiente |
+| DEC-05 | ¿Cuáles son las librerías corporativas ya existentes?                                                                                                          | Plataforma backend                                         | Pendiente |
+| DEC-06 | ¿Qué mecanismos de integración/mensajería están aprobados?                                                                                                     | Arquitectura/área AWS                                      | Pendiente |
 | DEC-07 | ¿Cómo opera Spring Security actualmente (filtros, IdP, credenciales/tokens, roles, claims, autorización por recurso) y cuál es el contrato objetivo en NestJS? | Arquitectura + seguridad + equipo propietario de identidad | Pendiente |
-| DEC-08 | ¿Cuáles son los SLO/NFR por endpoint crítico? | Negocio/operación | Pendiente |
+| DEC-08 | ¿Cuáles son los SLO/NFR por endpoint crítico?                                                                                                                  | Negocio/operación                                          | Pendiente |
 
 ---
 
@@ -686,6 +692,7 @@ Las denominaciones exactas, comandos y artefactos deben adaptarse a la versión 
 
 ```md
 ## Backend Architecture Baseline
+
 - Analyze legacy Java behavior before proposing a replacement.
 - Identify bounded contexts before splitting services.
 - Apply DDD + Hexagonal Architecture with inward dependencies.
@@ -756,15 +763,15 @@ Las denominaciones exactas, comandos y artefactos deben adaptarse a la versión 
 - OpenAPI — especificación: https://spec.openapis.org/oas/latest.html
 - Semantic Versioning: https://semver.org/
 
-**Referencias bibliográficas recomendadas:** Eric Evans, *Domain-Driven Design*; Vaughn Vernon, *Implementing Domain-Driven Design*; Sam Newman, *Building Microservices*.
+**Referencias bibliográficas recomendadas:** Eric Evans, _Domain-Driven Design_; Vaughn Vernon, _Implementing Domain-Driven Design_; Sam Newman, _Building Microservices_.
 
 ---
 
 ## 15. Control de cambios
 
-| Versión | Fecha | Descripción |
-|---|---|---|
-| 1.1.0 | 2026-11-13 | Se incorpora el assessment y migración de Spring Security y sus controles a NestJS. AWS/DevOps permanece fuera de alcance. |
-| 1.0.0 | 2026-11-12 | Especificación base para assessment y migración Java → NestJS, con exclusión original de autenticación y DevOps/AWS. |
+| Versión | Fecha      | Descripción                                                                                                                |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 1.1.0   | 2026-11-13 | Se incorpora el assessment y migración de Spring Security y sus controles a NestJS. AWS/DevOps permanece fuera de alcance. |
+| 1.0.0   | 2026-11-12 | Especificación base para assessment y migración Java → NestJS, con exclusión original de autenticación y DevOps/AWS.       |
 
 **Estado de aprobación:** No aprobado todavía. Debe revisarse con arquitectura, responsables de dominio, equipo legacy, plataforma backend, equipo de datos y áreas corporativas correspondientes antes de adoptarse como norma obligatoria.
