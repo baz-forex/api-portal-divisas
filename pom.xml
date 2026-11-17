@@ -20,8 +20,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
         <jacoco.version>0.8.8</jacoco.version>
         <mongodb.version>5.6.0</mongodb.version>
         <personify.provisioning.version>1.4.1.RELEASE</personify.provisioning.version>
@@ -302,8 +302,7 @@
                 <version>3.11.0</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <release>${java.version}</release>
                     <testExcludes>
                         <exclude>**/package-info.java</exclude>
                     </testExcludes>
@@ -324,10 +323,6 @@
                     <warSourceDirectory>WebContent</warSourceDirectory>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <webResources>
-                        <resource>
-                            <directory>${project.build.sourceDirectory}</directory>
-                            <targetPath>WEB-INF/classes</targetPath>
-                        </resource>
                         <resource>
                             <directory>src/main/webapp/WEB-INF</directory>
                             <targetPath>WEB-INF</targetPath>
