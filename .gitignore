@@ -33,7 +33,7 @@
 .settings/org.eclipse.jdt.core.prefs
 .settings/org.eclipse.wst.common.project.facet.core.xml
 .settings/org.sonarlint.eclipse.core.prefs
-/.idea
+/.github/
 
 ${sys:jboss.server.log.dir}/
 logs/
