@@ -128,6 +128,9 @@ Los ADR documentarán decisiones de IdP, mecanismos de validación, autorizació
 - **Integración del proyecto:** la configuración está en
   `openspec/config.yaml` y los skills instalados por proyecto en
   `.agents/skills/`.
+- **Skill externa instalada:** `grill-me`, procedente de
+  `https://github.com/mattpocock/skills`, instalada correctamente para
+  OpenCode mediante `npx skills`.
 - OpenSpec `2.1.1` utiliza skills. Los workflows se invocan por su skill ID, por ejemplo
   `@openspec-propose`, `@openspec-new-change`, `@openspec-apply-change` y
   `@openspec-verify-change`.
