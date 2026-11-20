@@ -122,6 +122,17 @@ Los ADR documentarán decisiones de IdP, mecanismos de validación, autorizació
 
 ## 9. Reglas OpenSpec / OpenCode
 
+- **Instalación vigente:** OpenSpec `2.1.1`, instalado globalmente con
+  `npm install -g @fission-ai/openspec@latest`; no es una dependencia Maven ni
+  una dependencia npm local del proyecto.
+- **Integración del proyecto:** la configuración está en
+  `openspec/config.yaml` y los skills instalados por proyecto en
+  `.agents/skills/`.
+- OpenSpec `2.1.1` utiliza skills. Los workflows se invocan por su skill ID, por ejemplo
+  `@openspec-propose`, `@openspec-new-change`, `@openspec-apply-change` y
+  `@openspec-verify-change`.
+- Workflows disponibles: `propose`, `explore`, `new`, `continue`, `apply`,
+  `update`, `ff`, `sync`, `archive`, `bulk-archive`, `verify` y `onboard`.
 - **Explore (Plan):** solo inspección, inventarios y hallazgos; incluir security AS-IS. No modificar archivos ni producción.
 - **Propose (Plan):** propuesta de arquitectura, specs, design, tasks, ADR candidatos y criterios verificables; incluir security TO-BE y paridad.
 - **Apply (Build):** solo ejecutar cambios autorizados en tasks; para la primera iteración de assessment, **solo documentación**, nunca implementación de código ni cambios de seguridad en runtime.
@@ -163,6 +174,7 @@ Los ADR documentarán decisiones de IdP, mecanismos de validación, autorizació
 
 ## 13. Control de cambios
 
-| Versión | Fecha | Cambio |
-|---|---|---|
-| 1.1.0 | 2026-11-13 | Se incorpora migración de Spring Security, pruebas de paridad y artefactos de seguridad. AWS/DevOps sigue excluido. |
+| Versión | Fecha      | Cambio                                                                                                              |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| 1.1.1   | 2026-11-20 | Se documenta OpenSpec 2.1.1 global y la integración vigente basada en skills.                                       |
+| 1.1.0   | 2026-11-13 | Se incorpora migración de Spring Security, pruebas de paridad y artefactos de seguridad. AWS/DevOps sigue excluido. |

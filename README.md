@@ -119,6 +119,62 @@ Gestión completa de tipos de cambio para la red de sucursales:
 - MongoDB 5.x+
 - Servidor de aplicaciones compatible con WAR (Tomcat)
 
+## OpenSpec y OpenCode
+
+OpenSpec se utiliza como herramienta de apoyo para el assessment y la
+migración incremental del backend Java. No es una dependencia Maven ni una
+dependencia npm local del proyecto.
+
+La versión instalada actualmente es **OpenSpec 2.1.1**, mediante instalación
+global de npm:
+
+```bash
+npm install -g @fission-ai/openspec@latest
+openspec --version
+```
+
+La instalación global se encuentra bajo el prefijo de Node.js administrado
+por `nvm`; el proyecto no requiere `package.json` para utilizarla.
+
+La configuración del proyecto se encuentra en:
+
+```text
+openspec/config.yaml
+.agents/skills/
+```
+
+Los workflows disponibles son:
+
+- `openspec-propose`
+- `openspec-explore`
+- `openspec-new-change`
+- `openspec-continue-change`
+- `openspec-apply-change`
+- `openspec-update-change`
+- `openspec-ff-change`
+- `openspec-sync-specs`
+- `openspec-archive-change`
+- `openspec-bulk-archive-change`
+- `openspec-verify-change`
+- `openspec-onboard`
+
+En OpenCode se invocan como skills, por ejemplo:
+
+```text
+@openspec-propose
+@openspec-apply-change
+@openspec-verify-change
+```
+
+Para comprobar la instalación y el estado del proyecto:
+
+```bash
+openspec --version
+openspec context --json
+openspec doctor --json
+openspec validate --changes
+```
+
 ## Compilación
 
 ```bash
