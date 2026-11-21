@@ -175,22 +175,6 @@ openspec doctor --json
 openspec validate --changes
 ```
 
-### Skills adicionales
-
-Los skills externos pueden instalarse con `npx skills`. Por ejemplo, para
-instalar `grill-me` específicamente para OpenCode:
-
-```bash
-npx skills add https://github.com/mattpocock/skills \
-  --skill grill-me \
-  --agent opencode \
-  --yes
-```
-
-El uso de `--agent opencode` y `--yes` evita el prompt interactivo que requiere
-una terminal TTY. Una ejecución cancelada durante la selección de agentes no
-instala archivos ni modifica el proyecto.
-
 ## Compilación
 
 ```bash

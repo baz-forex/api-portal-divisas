@@ -8,7 +8,7 @@
 
 ## 1. Alcance y autoridad
 
-- **Incluido:** assessment del monolito, DDD, Hexagonal/Clean Architecture, APIs, datos, mensajería, resiliencia, pruebas, observabilidad, **análisis y migración de Spring Security**, contratos con sistemas externos y documentación.
+- **Incluido:** assessment del monolito, DDD, Hexagonal/Clean Architecture, APIs, datos, mensajería, resiliencia, pruebas, **análisis y migración de Spring Security**, contratos con sistemas externos y documentación.
 - **Excluido:** diseño/operación de infraestructura AWS, DevOps, CI/CD, IaC, configuración de cuentas/redes y despliegues; el equipo AWS administra esas capacidades. Documenta interfaces y requisitos de aplicación para coordinarse con él.
 - **No asumido:** el proveedor de identidad, tipo de token, topología MongoDB/DocumentDB, librerías privadas, versión de Java/NestJS, ni decisiones corporativas sin evidencia.
 - Orden de referencia: instrucciones superiores y políticas corporativas aplicables > ADR y specs aprobadas > documento rector > este AGENTS.md > skills cargadas > patrones observados. Ante contradicción, registra el conflicto y solicita decisión antes de cambios de comportamiento.
@@ -31,7 +31,6 @@
 - MongoDB / Amazon DocumentDB con Mongoose o driver oficial bajo puertos; **probar consultas, índices, transacciones y change streams contra la versión real de DocumentDB**.
 - SQS/EventBridge con AWS SDK v3 **solo si aplica y está aprobado**; idempotencia, DLQ, backoff y Outbox según requisitos.
 - Vitest/Jest, pruebas de integración/contrato/e2e y SonarQube según estándares del repositorio.
-- OpenTelemetry, logging estructurado y correlation/trace IDs, sin fuga de secretos o datos sensibles.
 - Librerías privadas versionadas para capacidades transversales aprobadas; no duplicar capacidades corporativas disponibles.
 
 ## 4. Estructura por capacidad (NestJS)
@@ -72,7 +71,7 @@ La migración **sí incluye autenticación y autorización**. No repitas la excl
 - Mapea autenticación a estrategias/adaptadores de validación y construcción de principal tipado; **no presupongas Passport, Cognito ni JWT si el código no lo demuestra**.
 - Mapea `@PreAuthorize`, roles/scopes y permisos a guards/policies por recurso; evita autorización basada solo en claims no verificados.
 - Define propagación segura de identidad a casos de uso, llamadas internas y eventos sin exponer credenciales.
-- Mantén contratos observables de 401/403 y errores; documenta excepciones acordadas mediante ADR.
+- Mantén los contratos de 401/403 y errores; documenta excepciones acordadas mediante ADR.
 - No desactives CSRF, CORS u otros controles sin evidenciar que el modelo de autenticación lo permite y obtener aprobación.
 - La migración debe respetar mínimos privilegios y límites de confianza; coordina con la plataforma, pero no modifiques su infraestructura.
 
@@ -112,13 +111,12 @@ Los ADR documentarán decisiones de IdP, mecanismos de validación, autorizació
 - Diseña timeouts, límites de reintento, DLQ y circuit breakers según dependencia; evita reintentos no idempotentes.
 - Usa CQRS, Saga y Event Sourcing solo cuando el caso de uso y sus garantías lo requieran.
 
-## 8. Pruebas, calidad y observabilidad
+## 8. Pruebas y calidad
 
 - Caracteriza reglas Java antes de implementar equivalentes TypeScript.
 - Incluye unit, integration, contract y e2e sobre flujos críticos, incluyendo pruebas negativas de seguridad.
 - Cobertura objetivo sujeta a política corporativa; nunca la uses como sustituto de escenarios significativos.
 - No declares que se ejecutaron pruebas, SonarQube o escáneres sin evidencias reales.
-- Telemetría correlacionable (traceId/requestId), métricas y logs estructurados; redacta tokens, credenciales y PII.
 
 ## 9. Reglas OpenSpec / OpenCode
 
