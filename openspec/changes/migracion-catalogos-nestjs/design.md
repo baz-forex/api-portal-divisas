@@ -57,7 +57,7 @@ La separación inicial permite entregar un servicio ejecutable sin fijar prematu
 
 ### 2. NestJS 11, Node.js 26 y pnpm como baseline
 
-El template utilizará NestJS 11.x en la última versión soportada por la organización, Node.js 26.12.1 y pnpm 12.22.0. Se habilitará TypeScript strict y scripts neutrales para build, lint, unit, integration, e2e y coverage.
+El template utilizará NestJS 11.x en la última versión soportada por la organización, Node.js 26.12.1 y pnpm 11.5.3, versión fijada por la imagen corporativa aprobada. Se habilitará TypeScript strict y scripts neutrales para build, lint, unit, integration, e2e y coverage.
 
 Se elige NestJS 11 porque es la versión corporativamente confirmada y evita introducir NestJS 12 sin aprobación. La versión exacta de cada dependencia deberá quedar fijada en el lockfile durante implementación.
 

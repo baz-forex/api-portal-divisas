@@ -15,7 +15,7 @@ La migración se propone ahora para establecer una base NestJS 11 soportada por 
 - Caracterizar y preservar las rutas y métodos documentados en `docs/api-portal-divisas.yaml`, incluidos los endpoints de lectura, alta y actualización de divisas.
 - Preservar el contrato observable `ResponseApi`, códigos HTTP, validaciones y comportamiento de resultados vacíos.
 - Documentar la propagación coordinada del alta de divisa hacia límites, regiones, segmentos y bitácora antes de migrar operaciones de escritura.
-- Definir una base técnica NestJS 11.x, Node.js 26.12.1, pnpm 12.22.0, TypeScript strict, Mongoose 9.x, Vitest, ESLint, OpenAPI y Docker local.
+- Definir una base técnica NestJS 11.x, Node.js 26.12.1, pnpm 11.5.3 (versión fijada por la imagen corporativa), TypeScript strict, Mongoose 9.x, Vitest, ESLint, OpenAPI y Docker local.
 - Incluir como dependencias de ejecución las versiones corporativas de `@gs/auth`, `@gs/crypto`, `@gs/documentdb`, `@gs/errors`, `@gs/health`, `@gs/logger`, `@gs/proxy`, `@gs/swagger`, `@gs/utils` y `@gsa/decorators`.
 - Configurar el repositorio privado de dependencias **AWS CodeArtifactory** mediante `.npmrc` sin credenciales versionadas y fijar `@gs/utils` en `0.1.1` mediante `pnpm.overrides`.
 - Integrar `@gs/logger` mediante `WinstonModule`, `loggerConfig` y `loggerHttpConfig`, manteniendo redacción de secretos y PII.
