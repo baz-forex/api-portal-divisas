@@ -10,20 +10,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * Clase de Utilerias relacionadas con eechas
- * 
-=======
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
-/**
- * Clase de Utilerias
- * relacionadas con fechas
- * @author B813196
- * itoxtle
+ * Clase de utilidades relacionadas con fechas.
  */
 public final class DateUtils {
 

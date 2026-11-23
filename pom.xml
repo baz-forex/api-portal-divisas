@@ -324,6 +324,10 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <webResources>
                         <resource>
+                            <directory>${project.build.sourceDirectory}</directory>
+                            <targetPath>WEB-INF/classes</targetPath>
+                        </resource>
+                        <resource>
                             <directory>src/main/webapp/WEB-INF</directory>
                             <targetPath>WEB-INF</targetPath>
                         </resource>
