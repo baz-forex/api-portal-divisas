@@ -23,12 +23,13 @@ Definir criterios de arquitectura de software para evaluar el estado actual de u
 ### 1.2 Objetivos específicos
 
 1. Identificar módulos, capacidades de negocio, dependencias, consumidores y reglas existentes en el monolito.
-2. Detectar límites de dominio (_bounded contexts_) y candidatos a extracción.
+2. Los límites de dominio (_bounded contexts_) ya se tiene detectados, se establece y exige que seán los candidatos a extracción (/api/bitacora, /api/catalogos, /api/core, /api/digital, /api/siex, /api/tef, /api/usuarios).
 3. Definir la estructura interna de referencia de los nuevos servicios.
 4. Establecer decisiones sobre persistencia, comunicación, contratos, errores y resiliencia.
 5. Seleccionar tecnologías y librerías para desarrollo, documentación, calidad y observabilidad de aplicaciones.
 6. Establecer una estrategia verificable de migración, pruebas de paridad y retirada progresiva de funcionalidades legacy.
 7. Producir especificaciones reutilizables en un flujo SDD (Specification-Driven Development) y revisables mediante ADR.
+8. Crear proyecto template NestJS para que funcione como base para futuros microservicios.
 
 ### 1.3 Dentro del alcance
 
@@ -47,6 +48,7 @@ Definir criterios de arquitectura de software para evaluar el estado actual de u
 - Diseño de despliegues, pipelines, contenedorización, IaC, redes, cuentas AWS, operación cloud y gestión de secretos.
 - Selección definitiva de servicios AWS administrados sin aprobación del área responsable.
 - Reingeniería funcional del negocio sin aprobación explícita.
+- Verificar compatibilidad exacta entre MongoDB y DocumentDB. No se cuenta con infraestructura disponible DocumentDB para pruebas.
 
 **Límite de integración:** se analizará la configuración real de Spring Security y sus proveedores de identidad. La migración implementará los controles equivalentes en NestJS, integrándose con el proveedor corporativo vigente si existe. Cambiar dicho proveedor requiere una decisión explícita. La administración de AWS sigue fuera de alcance.
 
@@ -91,21 +93,20 @@ Definir criterios de arquitectura de software para evaluar el estado actual de u
 | Área                    | Propuesta                                                 | Decisión / criterio                                                                                       |
 | ----------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | Lenguaje                | TypeScript con `strict: true`                             | Estándar objetivo.                                                                                        |
-| Runtime                 | Node.js versión LTS aprobada                              | No fijar un número sin matriz de soporte institucional.                                                   |
-| Framework               | NestJS                                                    | Estándar objetivo de aplicación.                                                                          |
+| Runtime                 | Node.js v26.12.1                              | No fijar un número sin matriz de soporte institucional.                                                   |
+| Framework               | NestJS v11.x                                                    | Estándar objetivo de aplicación.                                                                          |
 | Package manager         | pnpm                                                      | Preferido; versiones controladas.                                                                         |
 | HTTP adapter            | Express                                                   | Elegir según compatibilidad del ecosistema y necesidades existentes; no cambiar por rendimiento supuesto. |
-| API                     | REST + OpenAPI 3.x                                        | Contratos explícitos y versionables.                                                                      |
+| API                     | REST + OpenAPI 2.x                                        | Contratos explícitos y versionables.                                                                      |
 | Validación              | `class-validator`/`class-transformer` o Zod               | Elegir una convención principal por servicio/plataforma.                                                  |
 | Persistencia documental | MongoDB / Amazon DocumentDB                               | La plataforma concreta debe confirmarse.                                                                  |
-| Modelo de persistencia  | Mongoose o driver oficial                                 | Mongoose preferente si las funciones usadas son compatibles con DocumentDB.                               |
+| Modelo de persistencia  | Mongoose                                 | Mongoose preferente si las funciones usadas son compatibles con DocumentDB.                               |
 | Testing unitario        | Vitest                                                    | Preferir la herramienta ya estandarizada.                                                                 |
 | HTTP/e2e                | Supertest o equivalente                                   | Prueba de contratos HTTP.                                                                                 |
 | Integración             | Testcontainers y entorno DocumentDB real                  | MongoDB local no sustituye el test de compatibilidad DocumentDB.                                          |
 | Contract tests          | OpenAPI diff / Pact según uso                             | Validar consumidores y proveedores.                                                                       |
 | Calidad                 | ESLint + Prettier + SonarQube                             | Alinear con la plataforma existente.                                                                      |
 | Logging                 | Logger corporativo `@gs/logger`                           | Estructurado y sin datos confidenciales.                                                                  |
-| Telemetría              | OpenTelemetry                                             | Instrumentación de aplicación independiente de backend.                                                   |
 | Mensajería              | AWS SDK v3 + adaptadores; SQS/EventBridge como candidatos | Confirmar junto con el área AWS; no son dependencias obligatorias.                                        |
 | Documentación           | Markdown + ADR + C4 + OpenAPI                             | Artefactos versionados junto al código.                                                                   |
 | Especificaciones        | OpenSpec / SDD                                            | Proceso opcional, sujeto a estándares del equipo.                                                         |
@@ -193,7 +194,7 @@ microservice-dvs-users/
 └── README.md
 ```
 
-**Regla de nombrado de microservicio:** el nombre debe empezar con el prefijo `microservice-dvs-*`. El `*` es el nombre representativo de las funcionalidades del propio servicio o del módulo de negocio (`domain`), por ejemplo: `core`, `tef`,`users`, `catalogs`, `auth`, `security`, etc.
+**Regla de nombrado de microservicio:** el nombre debe empezar con el prefijo `microservice-dvs-*`. El `*` es el nombre representativo de las funcionalidades del propio servicio o del módulo de negocio (`domain`), por ejemplo: `binnacle`, `catalogs`, `core`, `digital`, `siex`, `tef`,`users`, `auth`, `scim`, etc.
 
 ### 4.3 Reglas por capa
 
@@ -228,11 +229,15 @@ La implementación Mongoose pertenece a infraestructura; el caso de uso solo con
 ### 5.1 Estrategia preferente: multirepo + paquetes privados
 
 ```text
-microservice-dvs-users      # Repositorio / ciclo de vida independiente
-microservice-dvs-tef        # Repositorio / ciclo de vida independiente
-microservice-dvs-auth       # Repositorio / ciclo de vida independiente
+microservice-dvs-binnacle   # Repositorio / ciclo de vida independiente
+microservice-dvs-catalogs   # Repositorio / ciclo de vida independiente
 microservice-dvs-core       # Repositorio / ciclo de vida independiente
 microservice-dvs-digital    # Repositorio / ciclo de vida independiente
+microservice-dvs-siex       # Repositorio / ciclo de vida independiente
+microservice-dvs-tef        # Repositorio / ciclo de vida independiente
+microservice-dvs-users      # Repositorio / ciclo de vida independiente
+microservice-dvs-auth       # Repositorio / ciclo de vida independiente
+microservice-dvs-scim       # Repositorio / ciclo de vida independiente
 gs-auth                     # Librería privada
 gs-crypto                   # Librería privada
 gs-documentdb               # Librería privada
@@ -240,10 +245,10 @@ gs-errors                   # Librería privada
 gs-health                   # Librería privada
 gs-logger                   # Librería privada
 gs-proxy                    # Librería privada
-gs-swagges                  # Librería privada
+gs-swagger                  # Librería privada
 gs-utils                    # Librería privada
 gsa-decorators              # Librería privada
-microservice-dvs-template   # Estructura, convenciones y ejemplos
+microservice-dvs-template   # Estructura, convenciones y ejemplos base
 ```
 
 **La elección debe validarse contra la organización actual:** si existe un monorepo con gobierno maduro, no es necesaria una migración de repositorios únicamente para adoptar microservicios.
@@ -263,7 +268,7 @@ microservice-dvs-template   # Estructura, convenciones y ejemplos
 | `@gs/utils`         | `0.1.1`  | Reúne utilidades reutilizables para aplicaciones corporativas, como validaciones, transformación y clonación de objetos, manejo de strings, números y JSON, generación de códigos y tokens, diferencias entre objetos, procesamiento de streams y servicios relacionados con listas negras. Es una dependencia transversal de varios paquetes corporativos.      |
 | `@gsa/decorators`   | `~0.0.7` | Proporciona decoradores personalizados para validación y transformación de datos en NestJS, incluyendo validaciones comunes de espacios, enteros, números como string, opcionalidad y valores booleanos, además de decoradores de QA para strings y números requeridos u opcionales.                                                                             |
 
-**Seguridad como capacidad transversal:** evaluar si los adaptadores de validación de tokens, guards, políticas y contexto de identidad deben formar parte de una librería corporativa propia. Mantener separadas autenticación y autorización; no inventar interfaces ni proveedores sin verificar el código Java y acuerdos corporativos.
+**Seguridad como capacidad transversal:** evaluar si los adaptadores de validación de tokens, guards, políticas y contexto de identidad deben formar parte de una librería corporativa propia. Mantener separada autenticación y autorización; no inventar interfaces ni proveedores sin verificar el código Java y acuerdos corporativos.
 
 ### 5.3 Reglas de consumo de librerías
 
@@ -280,33 +285,36 @@ microservice-dvs-template   # Estructura, convenciones y ejemplos
 
 ### 6.1 Consideración central
 
-Amazon DocumentDB es un servicio compatible con determinadas APIs de MongoDB, **no un motor MongoDB idéntico**. No se debe asumir soporte por el nombre de una característica ni por los resultados de pruebas ejecutadas solo contra MongoDB.
+Amazon DocumentDB es un servicio compatible con determinadas APIs de MongoDB, **no un motor MongoDB idéntico**. Aunque no son idénticos vamos a asumir compatibilidad y soporte contra MongoDB.
 
 ### 6.2 Patrón de persistencia
 
 - Adoptar **Database per Service** como principio de propiedad lógica de datos.
 - No permitir consultas ni escrituras directas a colecciones de otro bounded context.
 - Encapsular Mongoose/driver en adaptadores de infraestructura.
-- Mantener schemas de persistencia separados de entidades de dominio.
+- Mantener schemas de persistencia separada de entidades y dominio.
 - Transformar persistencia ↔ dominio mediante mappers explícitos.
 - Definir índices y estrategias de consulta conforme a patrones de acceso reales.
 - Decidir por caso si la separación será por colección, base lógica o clúster; no asumir un clúster por microservicio.
 - Evitar transacciones distribuidas entre microservicios.
+- Usar paquete corporativo de conexión a base de datos DocumentDB (@gs/documentdb).
+- Implementar conectividad a múltiples bases de datos en una sola instancia. 
+- Habilitar funcionalidad para que a nivel de configuración permita conectar localmente a MongoDB y en QA Y PRODUCCIÓN a DocumentDB.
 
 ### 6.3 Matriz obligatoria de compatibilidad
 
 Registrar para cada operación actual:
 
-| Característica            | Uso en Java actual | Versión fuente MongoDB | Compatibilidad DocumentDB objetivo | Prueba requerida             | Resultado |
-| ------------------------- | ------------------ | ---------------------- | ---------------------------------- | ---------------------------- | --------- |
-| Aggregation Pipeline      | Por levantar       | Por levantar           | Pendiente                          | Casos reales y carga         | Pendiente |
-| Índices únicos/compuestos | Por levantar       | Por levantar           | Pendiente                          | Creación, errores, consultas | Pendiente |
-| Transacciones             | Por levantar       | Por levantar           | Pendiente                          | Atomicidad y fallas          | Pendiente |
-| Change Streams            | Por levantar       | Por levantar           | Pendiente                          | Reanudación/duplicados       | Pendiente |
-| Retryable writes          | Por levantar       | Por levantar           | Pendiente                          | Matriz por versión de motor  | Pendiente |
-| Collation/operadores      | Por levantar       | Por levantar           | Pendiente                          | Consultas críticas           | Pendiente |
-| TTL / expiración          | Por levantar       | Por levantar           | Pendiente                          | Comportamiento y tiempos     | Pendiente |
-| Bulk writes               | Por levantar       | Por levantar           | Pendiente                          | Atomicidad parcial y errores | Pendiente |
+| Característica            | Uso en Java actual | Versión fuente MongoDB | Prueba requerida             | Resultado |
+| ------------------------- | ------------------ | ---------------------- | ---------------------------- | --------- |
+| Aggregation Pipeline      | Por levantar       | Por levantar           | Casos reales y carga         | Pendiente |
+| Índices únicos/compuestos | Por levantar       | Por levantar           | Creación, errores, consultas | Pendiente |
+| Transacciones             | Por levantar       | Por levantar           | Atomicidad y fallas          | Pendiente |
+| Change Streams            | Por levantar       | Por levantar           | Reanudación/duplicados       | Pendiente |
+| Retryable writes          | Por levantar       | Por levantar           | Matriz por versión de motor  | Pendiente |
+| Collation/operadores      | Por levantar       | Por levantar           | Consultas críticas           | Pendiente |
+| TTL / expiración          | Por levantar       | Por levantar           | Comportamiento y tiempos     | Pendiente |
+| Bulk writes               | Por levantar       | Por levantar           | Atomicidad parcial y errores | Pendiente |
 
 No adoptar opciones del driver (p. ej., `retryWrites`) sin verificar el comportamiento de la versión y configuración DocumentDB a utilizar.
 
@@ -316,7 +324,7 @@ No adoptar opciones del driver (p. ej., `retryWrites`) sin verificar el comporta
 2. Localizar colecciones compartidas por módulos y consultas entre dominios.
 3. Definir contratos para lectura/escritura durante la convivencia.
 4. Planear backfill, sincronización temporal, reconciliación y corte.
-5. Especificar reglas de transformación, deduplicación y corrección de inconsistencias históricas.
+5. Especificar reglas de transformación, de duplicación y corrección de inconsistencias históricas.
 6. Mantener criterios de verificación y reversibilidad antes del cambio de propietario.
 
 **Riesgo principal:** que el monolito y un microservicio nuevo escriban simultáneamente el mismo dato sin coordinación; esto puede generar divergencias imposibles de resolver por una mera comparación de respuestas HTTP.
@@ -395,7 +403,7 @@ La cobertura de código puede adoptar un objetivo interno (p. ej., 80%) pero **n
 ### 8.3 Observabilidad de aplicación
 
 - Logs estructurados con nombre del servicio, entorno, evento, `requestId` y `traceId` cuando existan.
-- Tracing distribuido mediante OpenTelemetry y propagación de contexto entre HTTP/mensajes.
+- Tracing distribuido mediante paquete de logging corporativo (@gs/logger) y propagación de contexto entre HTTP/mensajes.
 - Métricas de errores, tiempo de respuesta, operaciones de negocio y salud de dependencias.
 - Sanitización de payloads y exclusión de información sensible de logs.
 - Catálogo de fallas y códigos de error estable para soporte.
@@ -570,15 +578,14 @@ independent_deployment_feasible: unknown
 ### Fase 1 — Diseño de dominios
 
 - Realizar Event Storming o workshops con expertos de negocio.
-- Identificar contextos, relaciones y puntos de alta cohesión.
-- Distinguir servicios candidatos de simples módulos internos.
+- Los contextos ya se tienen identificados, relaciones y puntos de alta cohesión.
+- Distinguir los servicios del contexto solicitado y sus módulos internos.
 - Crear mapa de contextos y matriz de propiedad de datos.
 
 **Salida:** Context Map, glosario, bounded contexts y candidatos priorizados.
 
 ### Fase 2 — Diseño objetivo del piloto
 
-- Elegir un contexto con bajo acoplamiento, datos propios y riesgo controlable.
 - Definir API/eventos, arquitectura interna y persistencia.
 - Documentar ACL con el monolito y estrategia de convivencia.
 - Crear ADR para decisiones relevantes y criterios de aceptación.
@@ -651,7 +658,7 @@ independent_deployment_feasible: unknown
 
 ---
 
-## 12. Artefactos SDD que deben producirse
+## 12. Artefactos SDD que deben producirse para cada dominio/contexto
 
 ```text
 docs/
@@ -771,7 +778,8 @@ Las denominaciones exactas, comandos y artefactos deben adaptarse a la versión 
 
 | Versión | Fecha      | Descripción                                                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 1.2.0   | 2026-11-23 | Se establecen los dominios específicos para migración. AWS/DevOps permanece fuera de alcance. |
 | 1.1.0   | 2026-11-13 | Se incorpora el assessment y migración de Spring Security y sus controles a NestJS. AWS/DevOps permanece fuera de alcance. |
 | 1.0.0   | 2026-11-12 | Especificación base para assessment y migración Java → NestJS, con exclusión original de autenticación y DevOps/AWS.       |
 
-**Estado de aprobación:** No aprobado todavía. Debe revisarse con arquitectura, responsables de dominio, equipo legacy, plataforma backend, equipo de datos y áreas corporativas correspondientes antes de adoptarse como norma obligatoria.
+**Estado de aprobación:** APROBADO. Se revisó con los responsables de arquitectura, responsables de dominio, equipo legacy, plataforma backend, equipo de datos y áreas corporativas correspondientes, se puede presumir como norma obligatoria.

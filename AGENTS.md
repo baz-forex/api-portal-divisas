@@ -4,7 +4,7 @@
 **Última actualización:** 2026-11-13  
 **Propósito:** instrucciones operativas para OpenCode/OpenSpec durante el assessment, diseño y migración incremental de una API monolítica Java/Spring Boot/Spring Security/MongoDB a microservicios NestJS/TypeScript/MongoDB o Amazon DocumentDB.
 
-> **Documento rector:** `docs/ARQUITECTURA_MIGRACION_BACKEND_JAVA_A_NESTJS_v1_1.md` (v1.1.0). Si falta, informa y evita inventar decisiones. No sobrescribas políticas vigentes de otro repositorio sin conciliación. Este documento es una plantilla específica para el proyecto de migración, no una política universal de toda la organización.
+> **Documento rector:** `docs/BASE_ARCHITECTURE_SPECIFICATION_v1_0.md`. Si falta, informa y evita inventar decisiones. No sobrescribas políticas vigentes de otro repositorio sin conciliación. Este documento es una plantilla específica para el proyecto de migración, no una política universal de toda la organización.
 
 ## 1. Alcance y autoridad
 
@@ -26,7 +26,7 @@
 
 ## 3. Stack objetivo: referencia, no imposición
 
-- Node.js LTS aprobado; NestJS + TypeScript `strict`; gestor pnpm cuando esté normalizado.
+- Node.js v26.12.1; NestJS v11.x + TypeScript `strict`; gestor pnpm cuando esté normalizado.
 - REST + OpenAPI; validación de entrada con `class-validator` o Zod según estándar aprobado.
 - MongoDB / Amazon DocumentDB con Mongoose o driver oficial bajo puertos; **probar consultas, índices, transacciones y change streams contra la versión real de DocumentDB**.
 - SQS/EventBridge con AWS SDK v3 **solo si aplica y está aprobado**; idempotencia, DLQ, backoff y Outbox según requisitos.
@@ -118,7 +118,8 @@ Los ADR documentarán decisiones de IdP, mecanismos de validación, autorizació
 - Incluye unit, integration, contract y e2e sobre flujos críticos, incluyendo pruebas negativas de seguridad.
 - Cobertura objetivo sujeta a política corporativa; nunca la uses como sustituto de escenarios significativos.
 - No declares que se ejecutaron pruebas, SonarQube o escáneres sin evidencias reales.
-## 9. Reglas OpenSpec / OpenCode
+
+## 9. Spec Driven Development - Skills
 
 - **Instalación vigente:** OpenSpec `2.1.1`, instalado globalmente con
   `npm install -g @fission-ai/openspec@latest`; no es una dependencia Maven ni
@@ -143,7 +144,11 @@ Los ADR documentarán decisiones de IdP, mecanismos de validación, autorizació
 - Antes de editar código, declarar plan, archivos afectados, dependencias y pruebas requeridas.
 - Para cada cambio, registrar fuentes de evidencia, riesgos, gaps, aprobaciones pendientes y criterios de rollback.
 
-## 10. Entregables mínimos del assessment
+## 10. MCPs
+
+- Usa Context7 como herramienta para consultar documentación técnica actualizada de frameworks, bibliotecas y tecnologías que encuentres en este proyecto y necesites consultar, verificar y actualizar.
+
+## 11. Entregables mínimos del assessment
 
 - Arquitectura AS-IS y mapa de dependencias Java.
 - Inventario de API, módulos, colecciones, integraciones y reglas de negocio.
@@ -153,7 +158,7 @@ Los ADR documentarán decisiones de IdP, mecanismos de validación, autorizació
 - Matriz Java → NestJS, incluida seguridad y casos de prueba de paridad.
 - Matriz MongoDB/DocumentDB, riesgos, ADR candidatos y roadmap Strangler Fig.
 
-## 11. Límites operativos y prohibiciones
+## 12. Límites operativos y prohibiciones
 
 - No introducir implementación de autenticación nueva sin evaluar Spring Security y dependencias corporativas existentes.
 - No omitir autorización por recurso al migrar un endpoint.
@@ -163,7 +168,7 @@ Los ADR documentarán decisiones de IdP, mecanismos de validación, autorizació
 - No modificar código ni datos durante Explore/Propose.
 - No sobreescribir `AGENTS.md` de un proyecto existente sin merge revisado de sus restricciones específicas.
 
-## 12. Checklist de aceptación para iniciar una extracción
+## 13. Checklist de aceptación para iniciar una extracción
 
 - [ ] Bounded context y propietario funcional identificados.
 - [ ] Contratos y escenarios legacy caracterizados.
@@ -174,7 +179,7 @@ Los ADR documentarán decisiones de IdP, mecanismos de validación, autorizació
 - [ ] Riesgos, NFR y criterios de rollback documentados.
 - [ ] Cambios implementables aprobados en OpenSpec.
 
-## 13. Control de cambios
+## 14. Control de cambios
 
 | Versión | Fecha      | Cambio                                                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
