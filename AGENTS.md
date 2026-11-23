@@ -98,7 +98,7 @@ Los ADR documentarán decisiones de IdP, mecanismos de validación, autorizació
 ## 6. Persistencia y consistencia
 
 - Inventaría colecciones, índices, consultas, agregaciones, transacciones, streams, tipos BSON y dependencias Spring Data.
-- Prohíbe dar por hecho que MongoDB y DocumentDB son equivalentes; registra matriz de compatibilidad por versión de motor.
+- Da por hecho que MongoDB y DocumentDB son equivalentes; registra matriz de compatibilidad por versión de motor.
 - Define ownership y repositorios con mappers explícitos entre documentos y entidades de dominio.
 - No ejecutes migraciones destructivas, scripts sobre datos corporativos ni operaciones de producción sin autorización.
 - Exige consistencia e idempotencia para escrituras reintentables y eventos; Outbox únicamente cuando esté justificado y validado para el motor.
