@@ -4,7 +4,7 @@
 **Última actualización:** 2026-11-13  
 **Propósito:** instrucciones operativas para OpenCode/OpenSpec durante el assessment, diseño y migración incremental de una API monolítica Java/Spring Boot/Spring Security/MongoDB a microservicios NestJS/TypeScript/MongoDB o Amazon DocumentDB.
 
-> **Documento rector:** `docs/BASE_ARCHITECTURE_SPECIFICATION_v1_0.md`. Si falta, informa y evita inventar decisiones. No sobrescribas políticas vigentes de otro repositorio sin conciliación. Este documento es una plantilla específica para el proyecto de migración, no una política universal de toda la organización.
+> **Documentos rectores:** `docs/BASE_ARCHITECTURE_SPECIFICATION_v1_0.md, docs/api-portal-divisas_v1.0.yaml`. Si falta, informa y evita inventar decisiones. No sobrescribas políticas vigentes de otro repositorio sin conciliación. Este documento es una plantilla específica para el proyecto de migración, no una política universal de toda la organización.
 
 ## 1. Alcance y autoridad
 
