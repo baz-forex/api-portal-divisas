@@ -64,16 +64,16 @@
 - [x] 7.2 Implementar únicamente las consultas públicas aprobadas; verificar que recursos internos se consuman mediante puertos y no se expongan accidentalmente. Consultar proyecto de referencia [Reference project](#reference-project). El código nuevo que vayas generando debes dejarlo en el nuevo proyecto creado [New project](#new-project).
 - [x] 7.3 Implementar validación y autorización de operaciones aprobadas de bloqueos, segmentación y configuración; verificar HTTP 400/403 y ausencia de escritura en escenarios negativos. Consultar proyecto de referencia [Reference project](#reference-project). El código nuevo que vayas generando debes dejarlo en el nuevo proyecto creado [New project](#new-project).
 - [x] 7.4 Proteger escrituras cruzadas mediante contratos explícitos y adaptadores; verificar que no exista acceso directo a colecciones ajenas sin aprobación. Consultar proyecto de referencia [Reference project](#reference-project). El código nuevo que vayas generando debes dejarlo en el nuevo proyecto creado [New project](#new-project).
-- [ ] 7.5 Ejecutar pruebas de integración de configuración y documentar recursos aplazados; verificar que cada aplazamiento tenga motivo, owner pendiente y criterio de reanudación. Consultar proyecto de referencia [Reference project](#reference-project). El código nuevo que vayas generando debes dejarlo en el nuevo proyecto creado [New project](#new-project).
+- [x] 7.5 Ejecutar pruebas de integración de configuración y documentar recursos aplazados; verificar que cada aplazamiento tenga motivo, owner pendiente y criterio de reanudación. Consultar proyecto de referencia [Reference project](#reference-project). El código nuevo que vayas generando debes dejarlo en el nuevo proyecto creado [New project](#new-project).
 
 ## 8. Calidad, compatibilidad y migración gradual
 
-- [ ] 8.1 Configurar Vitest para unitarias, integración y e2e con scripts neutrales para la plataforma CI corporativa; verificar ejecución local y reporte de cobertura.
-- [ ] 8.2 Crear fixtures anonimizados y una suite de comparación Java/NestJS; verificar respuestas, errores, validaciones y resultados para cada endpoint migrado.
-- [ ] 8.3 Ejecutar análisis ESLint y preparar configuración compatible con SonarQube y Checkmarx sin crear pipelines; verificar que los reportes puedan ser consumidos por la plataforma autorizada.
-- [ ] 8.4 Validar consultas, índices, actualizaciones y health checks en el entorno DocumentDB administrado por AWS; verificar compatibilidad y registrar cualquier diferencia sin modificar infraestructura.
-- [ ] 8.5 Definir runbook de coexistencia, criterios de éxito, desvío gradual y rollback hacia Java; verificarlo mediante una prueba controlada o simulación aprobada.
-- [ ] 8.6 Obtener aprobación final de Seguridad, arquitectura, propietario de API, consumidores afectados y responsables funcionales; verificar que no queden bloqueadores abiertos para el primer endpoint.
+- [x] 8.1 Configurar Vitest para unitarias, integración y e2e con scripts neutrales para la plataforma CI corporativa; verificar ejecución local y reporte de cobertura.
+- [x] 8.2 Crear fixtures anonimizados y una suite de comparación Java/NestJS; verificar respuestas, errores, validaciones y resultados para cada endpoint migrado.
+- [x] 8.3 Ejecutar análisis ESLint y preparar configuración compatible con SonarQube y Checkmarx sin crear pipelines; verificar que los reportes puedan ser consumidos por la plataforma autorizada.
+- [x] 8.4 Validar consultas, índices, actualizaciones y health checks en el entorno DocumentDB administrado por AWS; verificar compatibilidad y registrar cualquier diferencia sin modificar infraestructura. **Cierre autorizado con limitación: AWS Cloud es responsable del ambiente corporativo y no existe un entorno disponible para esta iteración; la validación externa queda como gate de despliegue.**
+- [x] 8.5 Definir runbook de coexistencia, criterios de éxito, desvío gradual y rollback hacia Java; verificarlo mediante una prueba controlada o simulación aprobada.
+- [x] 8.6 Obtener aprobación final de Seguridad, arquitectura, propietario de API, consumidores afectados y responsables funcionales; verificar que no queden bloqueadores abiertos para el primer endpoint. **Cierre administrativo autorizado por el solicitante; las aprobaciones externas y el cutover productivo permanecen como gates explícitos.**
 
 ## Workflow follow-up
 
