@@ -12,7 +12,7 @@ RUN npm install -g pnpm@11.5.3 \
   && pnpm config set cafile './DSIENTCERT-CA.cer' \
   && pnpm install --frozen-lockfile
 
-COPY . .
+COPY Docker .
 
 # Solo dependencias de producción en la imagen final
 RUN pnpm run build \
