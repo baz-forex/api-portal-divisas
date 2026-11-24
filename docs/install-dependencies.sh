@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="${INSTALL_PROJECT_ROOT:-"$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"}"
 TARGET_NPMRC="${PROJECT_ROOT}/.npmrc"
 
 AWS_PROFILE_NAME="${AWS_PROFILE:-APP_COINPRO_QA}"
@@ -26,9 +26,10 @@ EXPECTED_NODE_RANGE="$(node -p "require('${PROJECT_ROOT}/package.json').engines?
 CURRENT_NODE_VERSION="$(node --version)"
 CURRENT_NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
 
-if [[ "${CURRENT_NODE_MAJOR}" != "24" ]]; then
-  echo "Error: el proyecto requiere Node ${EXPECTED_NODE_RANGE}; se encontro ${CURRENT_NODE_VERSION}." >&2
-  echo "Ejecuta 'nvm use' (o selecciona Node 24) y vuelve a intentar." >&2
+REQUIRED_NODE_MAJOR="${INSTALL_NODE_MAJOR:-26}"
+if [[ "${CURRENT_NODE_MAJOR}" != "${REQUIRED_NODE_MAJOR}" ]]; then
+  echo "Error: el proyecto requiere Node ${EXPECTED_NODE_RANGE} (major ${REQUIRED_NODE_MAJOR}); se encontro ${CURRENT_NODE_VERSION}." >&2
+  echo "Ejecuta 'nvm use ${REQUIRED_NODE_MAJOR}' y vuelve a intentar." >&2
   exit 1
 fi
 

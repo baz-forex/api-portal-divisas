@@ -23,13 +23,13 @@ Definir criterios de arquitectura de software para evaluar el estado actual de u
 ### 1.2 Objetivos específicos
 
 1. Identificar módulos, capacidades de negocio, dependencias, consumidores y reglas existentes en el monolito.
-2. Los límites de dominio (_bounded contexts_) ya se tiene detectados, se establece y exige que seán los candidatos a extracción (/api/bitacora, /api/catalogos, /api/core, /api/digital, /api/siex, /api/tef, /api/usuarios).
+2. Los límites de dominio (_bounded contexts_) ya se tienen definidos, se establece y exige que seán los candidatos a extracción (por endpoint: /api/bitacora, /api/catalogos, /api/core, /api/digital, /api/siex, /api/tef, /api/usuarios).
 3. Definir la estructura interna de referencia de los nuevos servicios.
 4. Establecer decisiones sobre persistencia, comunicación, contratos, errores y resiliencia.
 5. Seleccionar tecnologías y librerías para desarrollo, documentación, calidad y observabilidad de aplicaciones.
 6. Establecer una estrategia verificable de migración, pruebas de paridad y retirada progresiva de funcionalidades legacy.
 7. Producir especificaciones reutilizables en un flujo SDD (Specification-Driven Development) y revisables mediante ADR.
-8. Crear proyecto template NestJS para que funcione como base para futuros microservicios.
+8. Definir un template NestJS y una estrategia de proyectos independientes para que cada microservicio de la migración se implemente fuera del repositorio del monolito.
 
 ### 1.3 Dentro del alcance
 
@@ -42,6 +42,26 @@ Definir criterios de arquitectura de software para evaluar el estado actual de u
 - Manejo de errores, confiabilidad, idempotencia, pruebas y observabilidad **dentro de la aplicación**.
 - Inventario técnico y plan incremental de extracción.
 - Assessment y migración de Spring Security: filtros, cadenas de seguridad, autenticación, autorización, roles/permisos, JWT/OAuth2/OIDC cuando apliquen, sesiones, políticas, excepciones y pruebas de paridad.
+- La implementación de cada microservicio de la migración debe residir en un proyecto nuevo e independiente, fuera del repositorio `api-portal-divisas`. La ruta y el nombre concretos se definirán por bounded context en el artefacto de extracción correspondiente; esta especificación general no fija una única ubicación.
+- Evaluar la inclusión de (ref: /Users/phinder2024/Devs/BAZ/backend/TDM_COINPRO/microservice-tdm-superviser):
+  - Paquete corporativo @gs/logger.
+    - MonitoringModule
+    - loggerConfig
+    - loggerHttpConfig
+  - Paquete corporativo @gs/health.
+    - HealthModule
+  - Paquete corporativo @gs/crypto.
+    - CryptoModule
+    - AsymmetricCryptoService
+    - UseEncryptionV2
+    - EncryptionMethod
+  - Paquete corporativo @gs/documentdb.
+    - DocumentDBModule
+  - Paquete corporativo @gs/proxy.
+    - ProxyModule
+    - ProxyAuthGuard
+    - proxyConfiguration
+
 
 ### 1.4 Fuera del alcance
 
