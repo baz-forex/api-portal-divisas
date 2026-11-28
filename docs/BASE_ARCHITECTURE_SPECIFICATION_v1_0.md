@@ -472,11 +472,11 @@ El almacenamiento, visualización y operación del sistema de observabilidad per
 
 ### 8A.4 Artefactos requeridos
 
-- `docs/assessment/spring-security-inventory.md`
-- `docs/architecture/security-as-is.md`
-- `docs/architecture/security-to-be.md`
-- `docs/migration/security-parity-matrix.md`
-- `docs/migration/security-test-plan.md`
+- `docs/<dominio>/assessment/spring-security-inventory.md`
+- `docs/<dominio>/architecture/security-as-is.md`
+- `docs/<dominio>/architecture/security-to-be.md`
+- `docs/<dominio>/migration/security-parity-matrix.md`
+- `docs/<dominio>/migration/security-test-plan.md`
 - ADRs para decisiones de estrategia, IdP y controles que cambien deliberadamente.
 
 **Restricción:** esta sección cubre seguridad de aplicación; infraestructura, IAM cloud, WAF y operación AWS se documentan únicamente como dependencias/interfaces del equipo responsable.

@@ -129,7 +129,7 @@ Rollback inicial: devolver el enrutamiento al monolito y conservar el propietari
 
 ### 9. Secuencia propuesta de extracción
 
-La secuencia completa se documenta en `docs/migration/domain-extraction-sequence.md`. Se establece una ola 0 de capacidades transversales —seguridad, autenticación/autorización, observabilidad, health, errores, proxy, criptografía y persistencia— antes de extraer bounded contexts funcionales.
+La secuencia completa se documenta en `docs/catalogos/migration/domain-extraction-sequence.md`. Se establece una ola 0 de capacidades transversales —seguridad, autenticación/autorización, observabilidad, health, errores, proxy, criptografía y persistencia— antes de extraer bounded contexts funcionales.
 
 La propuesta funcional es: `Catalogos`, `Bitacora`, `SIEX`, `Digital`, `Core` dividido por capacidades, `Usuarios`, `SCIM` y finalmente `TEF`. `Auth` se trata como habilitador transversal y `SCIM` como provisioning coordinado con IAM, no como una dependencia que pueda omitirse del orden. La secuencia es revisable si cambian ownership, contratos, dependencias o decisiones corporativas de IAM.
 

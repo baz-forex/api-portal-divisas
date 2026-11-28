@@ -2,7 +2,7 @@
 
 ## Método
 
-`docs/assessment/api-inventory.md` contiene la extracción completa de mappings. Este documento resume las dependencias por capacidad y marca como pendiente cualquier enlace que no pueda demostrarse con imports y llamadas estáticas.
+`docs/catalogos/assessment/api-inventory.md` contiene la extracción completa de mappings. Este documento resume las dependencias por capacidad y marca como pendiente cualquier enlace que no pueda demostrarse con imports y llamadas estáticas.
 
 | Contexto | Controller(s) representativos | Service(s) | DAO(s) | Bases/colecciones observadas | Externos |
 |---|---|---|---|---|---|
